@@ -1,11 +1,13 @@
 import React from "react";
 import PerimetroSecao from "./components/PerimetroSecao";
+import Login from "./components/Login/Login";
+import RecuperarSenha from "./components/RecuperarSenha/RecuperarSenha";
+
 
 function App() {
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-200">
-      <PerimetroSecao />
-    </div>
+    <Login />
+    //<RecuperarSenha/>
   );
 }
 
