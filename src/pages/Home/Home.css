@@ -1,0 +1,18 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(to right, #38a169, #4299e1);
+    color: white;
+    text-align: center;
+  }
+  
+  .home-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  
