@@ -1,18 +1,17 @@
 import React, { useState } from "react";
-import "./Login.css"; // Importação do CSS
+import "./Login.css"; 
 
 const Login = () => {
-  // Estados para armazenar email, senha e mensagens de erro
+
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
 
-  // Função para enviar o login para o backend
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault(); // Evita recarregar a página
+    event.preventDefault(); 
     
     try {
-      const response = await fetch("http://localhost:3000/login", {
+      const response = await fetch("http://localhost:3000/agroSync/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha }),
@@ -25,11 +24,8 @@ const Login = () => {
         return;
       }
 
-      // Armazena o token no localStorage e redireciona
       localStorage.setItem("token", data.data.token);
       alert("Login realizado com sucesso!");
-      // Aqui você pode redirecionar o usuário, por exemplo:
-      // window.location.href = "/dashboard";
 
     } catch (err) {
       setError("Erro ao conectar com o servidor");
