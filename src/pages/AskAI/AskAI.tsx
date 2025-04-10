@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
 import axios from "axios";
 import "../AskAI/ask-ai.css";
 
+interface Message {
+    role: "user" | "assistant";
+    content: string;
+}
+
 const AskAI = () => {
     const [question, setQuestion] = useState("");
-    const [answer, setAnswer] = useState("");
+    const [messages, setMessages] = useState<Message[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const chatEndRef = useRef<HTMLDivElement>(null);
 
     const handleAsk = async () => {
         if (!question.trim()) {
@@ -14,45 +21,72 @@ const AskAI = () => {
             return;
         }
 
-        setLoading(true);
         setError("");
-        setAnswer("");
+        setLoading(true);
+
+        const newMessages = [...messages, { role: "user", content: question } as const];
+        setMessages(newMessages);
+        setQuestion("");
 
         try {
             const response = await axios.post("http://localhost:3000/agroSync/ask-ai", {
                 question,
             });
 
-            setAnswer(response.data.answer);
+            setMessages([
+                ...newMessages,
+                { role: "assistant", content: response.data.answer },
+            ]);
         } catch (err) {
-            setError("Algo deu errado. Tente novamente!");
             console.error(err);
+            setError("Algo deu errado. Tente novamente!");
         } finally {
             setLoading(false);
         }
     };
 
+    useEffect(() => {
+        chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages, loading]);
+
     return (
-        <div className="ask-ai-container">
-            <div className="ask-ai-box">
-                <h1 className="ask-ai-title">Pergunte sobre sua plantação 🌱</h1>
+        <div className="chat-container">
+            <h1 className="chat-title">Pergunte sobre sua plantação 🌿</h1>
+            <div className="chat-box">
+                {messages.map((msg, index) => (
+                    <div
+                        key={index}
+                        className={`chat-message ${msg.role === "user" ? "user" : "assistant"}`}
+                    >
+                        <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
+                ))}
+                {loading && (
+                    <div className="chat-message assistant">
+                        <span className="typing">Digitando...</span>
+                    </div>
+                )}
+                <div ref={chatEndRef} />
+            </div>
+
+            <div className="chat-input-area">
                 <textarea
-                    className="ask-ai-textarea"
-                    rows={3}
+                    className="chat-input"
+                    rows={2}
                     placeholder="Digite sua dúvida..."
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
                 />
                 <button
-                    className="ask-ai-button"
+                    className="chat-button"
                     onClick={handleAsk}
                     disabled={loading}
                 >
-                    {loading ? "Consultando a IA..." : "Perguntar"}
+                    Enviar
                 </button>
-                {error && <p className="ask-ai-error">{error}</p>}
-                {answer && <div className="ask-ai-answer">{answer}</div>}
             </div>
+
+            {error && <p className="chat-error">{error}</p>}
         </div>
     );
 };

@@ -1,86 +1,118 @@
-/* Fundo com gradiente suave */
-.ask-ai-container {
+/* Container principal */
+.chat-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    padding: 40px 20px;
+    background: linear-gradient(to bottom, #e6f4ea, #c3e6cb);
     min-height: 100vh;
-    background: linear-gradient(to bottom, #d4edda, #a8df8e);
-    padding: 20px;
-}
-
-/* Caixa de perguntas */
-.ask-ai-box {
-    background: white;
-    padding: 24px;
-    border-radius: 16px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 500px;
-    text-align: center;
+    font-family: 'Segoe UI', sans-serif;
 }
 
 /* Título */
-.ask-ai-title {
-    font-size: 1.8rem;
+.chat-title {
+    font-size: 2rem;
     font-weight: bold;
-    color: #2d6a4f;
-    margin-bottom: 16px;
+    color: #2f855a;
+    margin-bottom: 24px;
 }
 
-/* Input de texto */
-.ask-ai-textarea {
+/* Caixa de mensagens estilo chat */
+.chat-box {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
     width: 100%;
+    max-width: 600px;
+    height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Mensagens */
+.chat-message {
+    padding: 12px 16px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    max-width: 80%;
+    line-height: 1.4;
+    word-wrap: break-word;
+    white-space: pre-line;
+}
+
+.chat-message.user {
+    background-color: #daf5e8;
+    align-self: flex-end;
+    color: #2f855a;
+}
+
+.chat-message.assistant {
+    background-color: #f1f1f1;
+    align-self: flex-start;
+    color: #333;
+}
+
+/* Área de input */
+.chat-input-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+.chat-input {
+    flex: 1;
     padding: 12px;
-    border: 1px solid #c3e6cb;
-    border-radius: 8px;
-    outline: none;
+    border-radius: 10px;
+    border: 1px solid #ccc;
     font-size: 1rem;
     resize: none;
-    transition: border-color 0.3s ease-in-out;
+    outline: none;
+    transition: border 0.3s;
 }
 
-.ask-ai-textarea:focus {
+.chat-input:focus {
     border-color: #38a169;
-    box-shadow: 0 0 8px rgba(56, 161, 105, 0.3);
 }
 
-/* Botão de enviar */
-.ask-ai-button {
-    width: 100%;
-    margin-top: 12px;
-    padding: 12px;
-    background: #38a169;
+/* Botão */
+.chat-button {
+    background-color: #38a169;
     color: white;
-    font-weight: bold;
-    font-size: 1rem;
     border: none;
-    border-radius: 8px;
+    padding: 0 20px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background 0.3s ease-in-out;
+    font-weight: bold;
+    transition: background 0.3s;
 }
 
-.ask-ai-button:hover {
-    background: #2d6a4f;
+.chat-button:hover {
+    background-color: #2f855a;
 }
 
-.ask-ai-button:disabled {
-    background: #ccc;
+.chat-button:disabled {
+    background-color: #ccc;
     cursor: not-allowed;
 }
 
-/* Mensagens de erro */
-.ask-ai-error {
+/* Erros */
+.chat-error {
     color: #e3342f;
     margin-top: 12px;
 }
 
-/* Resposta da IA */
-.ask-ai-answer {
-    margin-top: 20px;
-    padding: 16px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    font-size: 1rem;
-    color: #333;
+/* Digitando... */
+.typing {
+    font-style: italic;
+    color: #888;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
 }
