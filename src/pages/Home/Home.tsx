@@ -8,7 +8,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="home-container">
-      <Header />
       <main className="home-body">
         <h1>Bem-vindo ao AgroSync</h1>
         <p>Gerencie sua horta de forma inteligente e eficiente!</p>
@@ -30,7 +29,6 @@ const Home: React.FC = () => {
           )}
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

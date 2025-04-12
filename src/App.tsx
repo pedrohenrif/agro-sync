@@ -1,22 +1,29 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import React from "react";
-import PerimetroSecao from "./components/PerimetroSecao";
+
 import Login from "./components/Login/Login";
-import Home from "./pages/Home/Home";
 import RecuperarSenha from "./components/RecuperarSenha/RecuperarSenha";
+import Layout from "./components/Layout/Layout";
+
+import Home from "./pages/Home/Home";
 import AskAI from "./pages/AskAI/AskAI";
+import GerenciarHorta from "./pages/GerenciarHorta/GerenciarHorta";
+import HortasCadastradas from "./pages/HortasCadastradas/HortasCadastradas";
 
 function App() {
   return (
-    //<Login />
-    //<RecuperarSenha/>
-    
     <Router>
-      <Routes>
-        <Route path="/ask-ai" element={<AskAI />} />
-      </Routes>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/ask-ai" element={<AskAI />} />
+          <Route path="/gerenciar-horta" element={<GerenciarHorta />} />
+          <Route path="/hortas" element={<HortasCadastradas />} />
+        </Routes>
+      </Layout>
     </Router>
   );
 }
+
 
 export default App;
