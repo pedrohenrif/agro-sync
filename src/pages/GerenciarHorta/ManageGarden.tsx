@@ -22,7 +22,7 @@ const ManageGarden = () => {
           };
       
           try {
-            const response = await fetch("http://localhost:3000/AgroSync/manager-garden", {
+            const response = await fetch("http://localhost:3000/AgroSync/manager-garden/created-garden", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
