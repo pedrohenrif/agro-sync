@@ -8,7 +8,7 @@ import Layout from "./components/Layout/Layout";
 import Home from "./pages/Home/Home";
 import AskAI from "./pages/AskAI/AskAI";
 import GerenciarHorta from "./pages/GerenciarHorta/ManageGarden";
-import HortasCadastradas from "./pages/HortasCadastradas/HortasCadastradas";
+import HortasCadastradas from "./pages/HortasCadastradas/RegisteredGardens";
 
 function App() {
   return (
