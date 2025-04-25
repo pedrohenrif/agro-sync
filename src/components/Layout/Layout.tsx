@@ -13,11 +13,12 @@ const Layout = ({ children }: LayoutProps) => {
       <aside className="sidebar">
         <div className="logo">🌱 AgroSync</div>
         <nav>
-          <Link to="/">🏠 Início</Link>
-          <Link to="/ask-ai">🤖 Perguntar à IA</Link>
-          <Link to="/gerenciar-horta">📋 Gerenciar Horta</Link>
-          <Link to="/hortas">🌾 Hortas Cadastradas</Link>
-          <Link to="/visualizar-canteiros">🌾 Visualizar Canteiros</Link>
+          <Link to="/">Início</Link>
+          <Link to="/ask-ai">Perguntar à IA</Link>
+          <Link to="/gerenciar-horta">Gerenciar Horta</Link>
+          <Link to="/hortas">Hortas Cadastradas</Link>
+          <Link to="/visualizar-canteiros">Visualizar Canteiros</Link>
+          <Link to="/dashboard">Visão Geral</Link>
         </nav>
       </aside>
       <div className="main-content">
