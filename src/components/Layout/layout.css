@@ -1,59 +1,62 @@
+
 .layout {
-    display: flex;
-    height: 100vh;
-  }
-  
-  .sidebar {
-    width: 240px;
-    background: #2d6a4f;
-    color: white;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-  
-  .sidebar .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: 24px;
-  }
-  
-  .sidebar a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 12px;
-    border-radius: 8px;
-    display: block;
-    transition: background 0.2s ease-in-out;
-  }
-  
-  .sidebar a:hover {
-    background: #40916c;
-  }
-  
-  .main-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: #f0fdf4;
-  }
-  
-  .header {
-    background: white;
-    padding: 16px 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  }
-  
-  .user-info {
-    text-align: right;
-    font-size: 0.9rem;
-    color: #333;
-  }
-  
-  .page-content {
-    flex: 1;
-    padding: 24px;
-    overflow-y: auto;
-  }
-  
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 240px;
+  background: #2d6a4f;
+  color: white;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.sidebar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.sidebar a {
+  color: white;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  display: block;
+  transition: background 0.2s ease-in-out;
+}
+
+.sidebar a:hover {
+  background: #40916c;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #f0fdf4;
+  overflow: hidden; /* <-- impede scroll horizontal na área principal */
+}
+
+.header {
+  background: white;
+  padding: 16px 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.user-info {
+  text-align: right;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.page-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto; /* somente scroll vertical se necessário */
+  overflow-x: hidden; /* impede scroll horizontal */
+}
