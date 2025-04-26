@@ -19,6 +19,7 @@ const Layout = ({ children }: LayoutProps) => {
           <Link to="/hortas">Hortas Cadastradas</Link>
           <Link to="/visualizar-canteiros">Visualizar Canteiros</Link>
           <Link to="/dashboard">Visão Geral</Link>
+          <Link to="/supply-stock">Estoque e Insumos</Link>
         </nav>
       </aside>
       <div className="main-content">
