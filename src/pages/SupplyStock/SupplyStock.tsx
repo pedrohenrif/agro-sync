@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './supplyStock.css';
 import { PlusCircle, Filter, Pencil, X, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
-
+import { createSupply, deleteSupply, updateSupply } from '../../service/supplyService';
 
 interface SupplyItem {
   id: number;
@@ -10,6 +10,21 @@ interface SupplyItem {
   category: string;
   quantity: number;
   unit: string;
+}
+
+interface Category {
+  id: number;
+  name: string;
+}
+
+interface Unit {
+  id: number;
+  name: string;
+}
+
+interface User {
+  id: number;
+  name: string;
 }
 
 const categories = ['Sementes', 'Adubos', 'Ferramentas'];
@@ -61,10 +76,11 @@ export default function SupplyStock() {
     setEditingItem(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+  
     if (editingItem) {
-      // Editar insumo
+      // Atualiza a lista local primeiro
       setSupplyList(prev =>
         prev.map(item =>
           item.id === editingItem.id
@@ -72,26 +88,61 @@ export default function SupplyStock() {
             : item
         )
       );
-    } else {
-      // Criar novo insumo
-      const newItem: SupplyItem = {
-        id: Date.now(),
-        name: formData.name,
-        category: formData.category,
-        quantity: parseFloat(formData.quantity),
-        unit: formData.unit
-      };
-      setSupplyList(prev => [...prev, newItem]);
+      
+      // Atualiza o backend
+      try {
+        await updateSupply(editingItem.id, {
+          name: formData.name,
+          quantity: parseFloat(formData.quantity),
+          unitId: 1, // Exemplo, deve ser adaptado ao seu backend
+        });
+        toast.success('Insumo atualizado com sucesso!');
+        closeModal();
+      } catch (error) {
+        toast.error('Erro ao atualizar insumo!');
+      }
+      return;
     }
-    closeModal();
+  
+    try {
+      const response = await createSupply({
+        name: formData.name,
+        quantity: parseFloat(formData.quantity),
+        unitId: 1,
+        userId: 1,
+        isActive: true,
+        categoryId: 1,
+      });
+  
+      const newItem: SupplyItem = {
+        id: response.id,
+        name: response.name,
+        category: formData.category,
+        quantity: response.quantity,
+        unit: formData.unit,
+      };
+  
+      setSupplyList(prev => [...prev, newItem]);
+      toast.success('Insumo criado com sucesso!');
+      closeModal();
+    } catch (error) {
+      console.error('Erro ao criar insumo:', error);
+      toast.error('Erro ao criar insumo!');
+    }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!itemToDelete) return;
-    setSupplyList(prev => prev.filter(item => item.id !== itemToDelete.id));
-    toast.success("Insumo excluído com sucesso!");
-    setItemToDelete(null);
-    setIsDeleteModalOpen(false);
+    
+    try {
+      await deleteSupply(itemToDelete.id); // Chama o backend para deletar o insumo (marcar como inativo)
+      setSupplyList(prev => prev.filter(item => item.id !== itemToDelete.id)); // Remove da lista local
+      toast.success('Insumo excluído com sucesso!');
+      setItemToDelete(null);
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      toast.error('Erro ao excluir insumo!');
+    }
   };
   
 
