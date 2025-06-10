@@ -44,3 +44,14 @@ export const deleteSupply = async (id: number) => {
     throw new Error('Erro ao excluir insumo');
   }
 };
+
+export const getCategories = async () => {
+  try {
+    const response = await api.get('/supply/get-categories');
+    return response.data;
+
+  } catch (erro) {
+    console.log('Erro ao buscar categorias:', erro)
+    throw new Error('Erro ao buscar categorias')
+  }
+}

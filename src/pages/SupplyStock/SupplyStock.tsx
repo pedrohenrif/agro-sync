@@ -135,8 +135,8 @@ export default function SupplyStock() {
     if (!itemToDelete) return;
     
     try {
-      await deleteSupply(itemToDelete.id); // Chama o backend para deletar o insumo (marcar como inativo)
-      setSupplyList(prev => prev.filter(item => item.id !== itemToDelete.id)); // Remove da lista local
+      await deleteSupply(itemToDelete.id); 
+      setSupplyList(prev => prev.filter(item => item.id !== itemToDelete.id));
       toast.success('Insumo excluído com sucesso!');
       setItemToDelete(null);
       setIsDeleteModalOpen(false);
