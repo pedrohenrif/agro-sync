@@ -4,6 +4,7 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import './dashboard.css';
 import { BarChart3, Leaf, CheckCircle } from 'lucide-react';
 import TotalGardensBarChart from './TotalGardensBarChart';
+import api from '../../service/api';
 
 
 interface DashboardData {
@@ -23,7 +24,7 @@ export default function DashboardStats() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await axios.get(`http://localhost:3000/agroSync/dashboard/get-data-dashboard/${1}`);
+        const response = await api.get(`/dashboard/get-data-dashboard/${1}`);
         setData(response.data);
       } catch (error) {
         console.error('Erro ao carregar dados do dashboard:', error);

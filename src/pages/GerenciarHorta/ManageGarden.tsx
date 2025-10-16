@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./ManageGarden.css";
+import api from '../../service/api';
 
 const ManageGarden = () => {
     const [formType, setFormType] = useState<"has_garden" | "needs_help" | null>(null);
@@ -22,22 +23,12 @@ const ManageGarden = () => {
           };
       
           try {
-            const response = await fetch("http://localhost:3000/AgroSync/manager-garden/created-garden", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-            });
+            const response = await api.post("/manager-garden/created-garden", payload);
       
-            if (response.ok) {
-              const data = await response.json();
-              alert("Horta criada com sucesso!");
-              console.log(data);
-            } else {
-              const error = await response.json();
-              alert("Erro ao criar a horta: " + error.error);
-            }
+            const data = response.data; 
+
+            alert("Horta criada com sucesso!");
+            console.log(data);
           } catch (error) {
             alert("Erro de rede ou servidor.");
             console.error(error);

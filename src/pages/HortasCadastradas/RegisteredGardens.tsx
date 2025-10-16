@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import api from '../../service/api';
 
 import "./RegisteredGardens.css";
 import EditGardenModal from "./EditGardenModal";
@@ -16,8 +17,8 @@ const RegisteredGardens = () => {
   const [gardenToDelete, setGardenToDelete] = useState<number | null>(null);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/AgroSync/manager-garden/get-gardens?userId=${1}`)
+    api
+      .get(`/manager-garden/get-gardens?userId=${1}`)
       .then((response) => {
         setGardens(response.data);
       })
@@ -41,7 +42,7 @@ const RegisteredGardens = () => {
   const handleDelete = async () => {
     if (gardenToDelete) {
       try {
-        await axios.delete(`http://localhost:3000/AgroSync/manager-garden/delete-garden/${gardenToDelete}`);
+        await api.delete(`/manager-garden/delete-garden/${gardenToDelete}`);
 
         setGardens(gardens.filter(garden => garden.id !== gardenToDelete));
         setDeleteModalOpen(false);

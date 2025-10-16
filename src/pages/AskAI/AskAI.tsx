@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import axios from "axios";
+import api from '../../service/api';
 import "../AskAI/ask-ai.css";
+
 
 interface Message {
     role: "user" | "assistant";
@@ -29,7 +31,7 @@ const AskAI = () => {
         setQuestion("");
 
         try {
-            const response = await axios.post("http://localhost:3000/agroSync/ask-ai", {
+            const response = await api.post("/ask-ai", {
                 question,
             });
 
