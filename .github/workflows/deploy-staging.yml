@@ -1,0 +1,35 @@
+name: Deploy Frontend Staging
+
+on:
+  push:
+    branches: [ develop ] 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to Staging Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+
+          script: |
+            # Carrega o NVM
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # Navega para a pasta do cliente de staging
+            cd /var/www/agrosync_staging/client
+            
+            # Baixa o código novo
+            git pull origin develop
+            
+            # Instala qualquer nova dependência
+            npm install
+            
+            # Gera a build de produção (os arquivos estáticos)
+            npm run build
