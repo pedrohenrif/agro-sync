@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Login.css"; 
 // Importando nossa instância centralizada do Axios
 import api from '../../service/api'; 
-// Use 'useNavigate' para redirecionar após o login, se desejar
-// import { useNavigate } from "react-router-dom"; 
+// Importando o hook para navegação
+import { useNavigate } from "react-router-dom"; 
 
 // --- Dados para o Slider ---
 const sliderData = [
@@ -36,24 +36,10 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // const navigate = useNavigate(); // Descomente se estiver usando React Router
+  // Hook para navegação
+  const navigate = useNavigate(); 
 
-  // --- Lógica do Slider ---
-  useEffect(() => {
-    // Timer para trocar o slide automaticamente a cada 5 segundos
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev === sliderData.length - 1 ? 0 : prev + 1));
-    }, 5000); // 5 segundos
-
-    // Limpa o timer quando o componente é desmontado
-    return () => clearInterval(timer);
-  }, []);
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-  };
-
-  // --- Lógica de Submit (Refatorada) ---
+  // --- Lógica de Submit (VERSÃO CORRETA E ÚNICA) ---
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); 
     setIsLoading(true);
@@ -61,46 +47,65 @@ const Login = () => {
 
     try {
       // Usando nossa instância 'api'
-      // ATENÇÃO: Corrigi o endpoint. Seu 'api.ts' tem baseURL '/api'.
-      // Seu backend escuta em '/api/login'. Portanto, só precisamos chamar '/login'.
+      // Seu backend escuta em '/api/login', então chamamos '/login'.
       const response = await api.post("/login", { email, senha });
 
-      // O Axios já nos dá 'data.success'
+      // Verifica a resposta da API
       if (!response.data.success) {
         setError(response.data.message || "Erro ao fazer login");
         setIsLoading(false);
         return;
       }
 
+      // Armazena o token e atualiza o estado
       localStorage.setItem("token", response.data.data.token);
-      alert("Login realizado com sucesso!");
       setIsLoading(false);
-      // Aqui você pode redirecionar o usuário:
-      // navigate('/dashboard'); 
+      
+      // Redireciona para a página /home após o sucesso
+      navigate('/home'); 
 
     } catch (err: any) {
-      // Erros do Axios ficam em 'err.response.data'
+      // Captura e exibe erros da API ou de conexão
       const apiError = err.response?.data?.message || "Erro ao conectar com o servidor";
       setError(apiError);
       setIsLoading(false);
     }
   };
 
+  // --- Lógica do Slider (VERSÃO ÚNICA) ---
+  useEffect(() => {
+    // Timer para trocar o slide automaticamente
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev === sliderData.length - 1 ? 0 : prev + 1));
+    }, 5000); // Muda a cada 5 segundos
+    
+    // Limpa o timer quando o componente é desmontado para evitar vazamentos de memória
+    return () => clearInterval(timer);
+  }, []); // O array vazio [] garante que o useEffect rode apenas uma vez (na montagem)
+
+  // Função para navegar para um slide específico clicando nos pontos
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
+
+  // --- JSX (Renderização do Componente) ---
   return (
     <div className="login-page-container">
       {/* ======================================================= */}
-      {/* LADO ESQUERDO: FORMULÁRIO (1/3 da tela) */}
+      {/* LADO ESQUERDO: FORMULÁRIO */}
       {/* ======================================================= */}
       <div className="login-form-section">
         <div className="login-form-content">
           <h2 className="login-title">AgroSync 🌿</h2>
           <p className="login-subtitle">Bem-vindo de volta! Acesse sua conta.</p>
 
+          {/* Exibe mensagem de erro, se houver */}
           {error && <p className="error-message">{error}</p>}
 
           <form className="login-form" onSubmit={handleSubmit}>
-            <label>Email</label>
+            <label htmlFor="email">Email</label>
             <input
+              id="email" // Adicionado htmlFor e id para acessibilidade
               type="email"
               placeholder="Digite seu email"
               value={email}
@@ -109,8 +114,9 @@ const Login = () => {
               disabled={isLoading}
             />
 
-            <label>Senha</label>
+            <label htmlFor="senha">Senha</label>
             <input
+              id="senha" // Adicionado htmlFor e id para acessibilidade
               type="password"
               placeholder="Digite sua senha"
               value={senha}
@@ -135,11 +141,12 @@ const Login = () => {
       </div>
 
       {/* ======================================================= */}
-      {/* LADO DIREITO: SLIDER (2/3 da tela) */}
+      {/* LADO DIREITO: SLIDER */}
       {/* ======================================================= */}
       <div className="login-slider-section">
         <div className="slider-content">
           {sliderData.map((slide, index) => (
+            // Renderiza cada slide, mas só o ativo fica visível (via CSS)
             <div
               key={index}
               className={`slide ${index === currentSlide ? 'active' : ''}`}
@@ -151,12 +158,13 @@ const Login = () => {
           ))}
         </div>
         
+        {/* Navegação por pontos na parte inferior do slider */}
         <div className="slider-nav">
           {sliderData.map((_, index) => (
             <div
               key={index}
               className={`dot ${index === currentSlide ? 'active' : ''}`}
-              onClick={() => goToSlide(index)}
+              onClick={() => goToSlide(index)} // Permite clicar para ir ao slide
             />
           ))}
         </div>
