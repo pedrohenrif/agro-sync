@@ -35,7 +35,7 @@
 
 .garden-actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around; 
   gap: 10px;
   margin-top: auto;
   padding-top: 16px;
@@ -83,4 +83,114 @@
   display: flex;
   gap: 10px;
   margin-top: 8px;
+}
+
+.journal-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
+  background-color: #2196F3; /* Cor azul (info) */
+  color: white;
+}
+
+.journal-button:hover {
+  background-color: #1e88e5;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 500px;
+  z-index: 1001;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-form h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: #2e7d32; /* Mesmo verde do título do card */
+}
+
+.modal-form label {
+  font-weight: bold;
+  margin-bottom: -5px; /* Aproxima o label do input */
+}
+
+.modal-form input[type="text"],
+.modal-form input[type="date"],
+.modal-form select,
+.modal-form textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.modal-form textarea {
+  resize: vertical; /* Permite ao usuário redimensionar a altura */
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end; /* Alinha botões à direita */
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 0; /* Remove padding extra pois não é no card */
+  border-top: none; /* Remove borda extra */
+}
+
+.modal-actions .submit-button,
+.modal-actions .cancel-button {
+  padding: 10px 16px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.submit-button {
+  background-color: #4caf50; 
+  color: white;
+}
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+.cancel-button {
+  background-color: #f44336; 
+  color: white;
+}
+.cancel-button:hover {
+  background-color: #d32f2f;
+}
+
+.submit-button:disabled,
+.cancel-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
