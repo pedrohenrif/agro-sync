@@ -1,68 +1,234 @@
-/* Login.css */
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Login.css
+
+/* Configuração da página inteira */
+.login-page-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden; /* Impede barras de rolagem */
+}
+
+/* ============================================= */
+/* LADO ESQUERDO: FORMULÁRIO */
+/* ============================================= */
+.login-form-section {
+  flex: 1; /* Ocupa 1/3 da tela */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff;
+  padding: 2rem;
+  overflow-y: auto; /* Permite scroll se o form for muito grande */
+}
+
+.login-form-content {
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-title {
+  font-size: 2rem; /* Aumentei o título */
+  font-weight: bold;
+  color: #2e7d32; /* Tom de verde do seu tema */
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.login-subtitle {
+  font-size: 1rem;
+  color: #718096; /* Cinza */
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+/* Estilos do formulário (reaproveitados do seu original) */
+.login-form label {
+  display: block;
+  text-align: left;
+  font-weight: 600;
+  color: #4a5568;
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  box-sizing: border-box; /* Garante que o padding não estoure a largura */
+}
+
+.login-button {
+  width: 100%;
+  background: #2f855a; /* Verde escuro do seu tema */
+  color: white;
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+  background: #276749;
+}
+
+.login-button:disabled {
+  background: #a0aec0; /* Cor para botão desabilitado */
+  cursor: not-allowed;
+}
+
+.forgot-password {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #4a5568;
+  text-align: right;
+}
+
+.forgot-password a {
+  color: #3182ce;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.signup-link {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #4a5568;
+  text-align: center;
+}
+
+.signup-link a {
+  color: #3182ce;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.error-message {
+  color: #e53e3e; /* Vermelho */
+  background: #fed7d7; /* Fundo vermelho claro */
+  border: 1px solid #e53e3e;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+
+/* ============================================= */
+/* LADO DIREITO: SLIDER */
+/* ============================================= */
+.login-slider-section {
+  flex: 2; /* Ocupa 2/3 da tela */
+  position: relative; /* Base para os slides e navegação */
+  overflow: hidden;
+  background: linear-gradient(135deg, #2e7d32 0%, #3182ce 100%);
+  color: white;
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.slider-content {
+  width: 100%;
+  height: 100%;
+}
+
+.slide {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+  padding: 2rem;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+}
+
+.slide.active {
+  opacity: 1;
+}
+
+.slide-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.slide-title {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.slide-description {
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Navegação por "pontinhos" */
+.slider-nav {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+  background: #ffffff;
+}
+
+/* ============================================= */
+/* RESPONSIVIDADE PARA CELULAR */
+/* ============================================= */
+@media (max-width: 768px) {
+  .login-page-container {
+    flex-direction: column; /* Empilha as seções */
+    height: auto; /* Altura automática */
     min-height: 100vh;
-    background: linear-gradient(to right, #38a169, #4299e1);
   }
-  
-  .login-box {
-    background: white;
-    padding: 2rem;
-    border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    width: 350px;
-    text-align: center;
+
+  .login-form-section {
+    flex: 1;
+    order: 2; /* Formulário vai para baixo */
+    padding: 2rem 1.5rem;
   }
-  
-  .login-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #2f855a;
-    margin-bottom: 20px;
+
+  .login-slider-section {
+    flex: 1;
+    order: 1; /* Slider vai para cima */
+    min-height: 40vh; /* Altura mínima para o slider no celular */
   }
-  
-  .login-form label {
-    display: block;
-    text-align: left;
-    font-weight: 600;
-    color: #4a5568;
-    margin-top: 10px;
+
+  .slide-title {
+    font-size: 1.8rem;
   }
-  
-  .login-form input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #cbd5e0;
-    border-radius: 5px;
+
+  .slide-description {
+    font-size: 1rem;
   }
-  
-  .login-button {
-    width: 100%;
-    background: #2f855a;
-    color: white;
-    font-weight: bold;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    margin-top: 15px;
-    cursor: pointer;
+
+  .slider-nav {
+    bottom: 20px; /* Sobe um pouco a navegação */
   }
-  
-  .login-button:hover {
-    background: #276749;
-  }
-  
-  .forgot-password {
-    margin-top: 10px;
-    font-size: 0.9rem;
-    color: #4a5568;
-  }
-  
-  .forgot-password a {
-    color: #3182ce;
-    font-weight: bold;
-  }
-  
+}
