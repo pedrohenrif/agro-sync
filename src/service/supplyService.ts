@@ -48,4 +48,15 @@ export const getCategories = async () => {
     console.log('Erro ao buscar categorias:', erro)
     throw new Error('Erro ao buscar categorias')
   }
-}
+};
+
+export const getSupplys = async () => {
+  try{
+    const response = await api.get('/supply/get-supplys');
+    return response.data;
+
+  } catch (error) {
+    console.log('Erro ao buscar lista de Insumos:', error)
+    throw new Error('Erro ao buscar Insumos')
+  }
+};
