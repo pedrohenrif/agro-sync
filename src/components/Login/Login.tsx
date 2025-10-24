@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css"; 
-// Importando nossa instância centralizada do Axios
 import api from '../../service/api'; 
-// Importando o hook para navegação
 import { useNavigate } from "react-router-dom"; 
 
-// --- Dados para o Slider ---
 const sliderData = [
   {
     icon: "📖",
@@ -36,18 +33,14 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Hook para navegação
   const navigate = useNavigate(); 
 
-  // --- Lógica de Submit (VERSÃO CORRETA E ÚNICA) ---
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); 
     setIsLoading(true);
     setError(""); // Limpa erros antigos
 
     try {
-      // Usando nossa instância 'api'
-      // Seu backend escuta em '/api/login', então chamamos '/login'.
       const response = await api.post("/login", { email, senha });
 
       // Verifica a resposta da API
@@ -72,40 +65,31 @@ const Login = () => {
     }
   };
 
-  // --- Lógica do Slider (VERSÃO ÚNICA) ---
   useEffect(() => {
-    // Timer para trocar o slide automaticamente
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev === sliderData.length - 1 ? 0 : prev + 1));
-    }, 5000); // Muda a cada 5 segundos
+    }, 5000); 
     
-    // Limpa o timer quando o componente é desmontado para evitar vazamentos de memória
     return () => clearInterval(timer);
-  }, []); // O array vazio [] garante que o useEffect rode apenas uma vez (na montagem)
+  }, []); 
 
-  // Função para navegar para um slide específico clicando nos pontos
   const goToSlide = (index: number) => {
     setCurrentSlide(index);
   };
 
-  // --- JSX (Renderização do Componente) ---
   return (
     <div className="login-page-container">
-      {/* ======================================================= */}
-      {/* LADO ESQUERDO: FORMULÁRIO */}
-      {/* ======================================================= */}
       <div className="login-form-section">
         <div className="login-form-content">
           <h2 className="login-title">AgroSync 🌿</h2>
           <p className="login-subtitle">Bem-vindo de volta! Acesse sua conta.</p>
 
-          {/* Exibe mensagem de erro, se houver */}
           {error && <p className="error-message">{error}</p>}
 
           <form className="login-form" onSubmit={handleSubmit}>
             <label htmlFor="email">Email</label>
             <input
-              id="email" // Adicionado htmlFor e id para acessibilidade
+              id="email"
               type="email"
               placeholder="Digite seu email"
               value={email}
@@ -116,7 +100,7 @@ const Login = () => {
 
             <label htmlFor="senha">Senha</label>
             <input
-              id="senha" // Adicionado htmlFor e id para acessibilidade
+              id="senha" 
               type="password"
               placeholder="Digite sua senha"
               value={senha}
@@ -139,10 +123,7 @@ const Login = () => {
           </p>
         </div>
       </div>
-
-      {/* ======================================================= */}
-      {/* LADO DIREITO: SLIDER */}
-      {/* ======================================================= */}
+      
       <div className="login-slider-section">
         <div className="slider-content">
           {sliderData.map((slide, index) => (
