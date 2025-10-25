@@ -14,6 +14,7 @@ import HortasCadastradas from "./pages/HortasCadastradas/RegisteredGardens";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SupplyStock from "./pages/SupplyStock/SupplyStock";
 import Login from "./components/Login/Login";
+import SearchResults from "./pages/SearchResults/SearchResults";
 
 
 const AppLayout = () => (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/hortas" element={<HortasCadastradas />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/supply-stock" element={<SupplyStock />} />
+          <Route path="/search-results" element={<SearchResults />} />
         </Route>
         
       </Routes>
