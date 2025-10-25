@@ -1,135 +1,176 @@
+// ARQUIVO: src/pages/GerenciarHorta/ManageGarden.tsx
+
 import React, { useState } from "react";
-import "./ManageGarden.css";
+import "./ManageGarden.css"; // Importa o CSS refatorado
 import api from '../../service/api';
+import { toast } from 'react-toastify'; // Para notificações
+
+// Interface para definir a estrutura dos dados do formulário
+interface GardenFormData {
+  name: string;
+  crop: string;
+  plantingDate: string;
+  sizeInM2: string; // Manter como string no estado para o input type="number"
+  location: string;
+}
 
 const ManageGarden = () => {
-    const [formType, setFormType] = useState<"has_garden" | "needs_help" | null>(null);
+  // Estado para controlar os campos do formulário
+  const [formData, setFormData] = useState<GardenFormData>({
+    name: "",
+    crop: "",
+    plantingDate: "",
+    sizeInM2: "",
+    location: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
 
-    const handleFormSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
+  // Função para atualizar o estado quando um campo muda
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  // Função para lidar com o envio do formulário
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    // Converte sizeInM2 para número antes de enviar
+    const payload = {
+      ...formData,
+      sizeInM2: Number(formData.sizeInM2) || 0, // Converte para número, ou 0 se inválido
+      userId: 1, // Mantenha como fixo por enquanto ou pegue do contexto de auth
+      isActive: true,
+    };
+
+    try {
+      // Usa a instância 'api' e o endpoint correto
+      const response = await api.post("/manager-garden/created-garden", payload);
       
-        if (formType === "has_garden") {
-          const form = event.target as HTMLFormElement;
-          const formData = new FormData(form);
+      toast.success("Horta criada com sucesso!"); // Notificação de sucesso
+      console.log(response.data); // Log da resposta (opcional)
       
-          const payload = {
-            name: formData.get("name"), 
-            crop: formData.get("crop") as string,
-            plantingDate: formData.get("planting_start_date") as string,
-            sizeInM2: Number(formData.get("size")),
-            location: formData.get("location") as string,
-            userId: 1, 
-            isActive: true,
-          };
-      
-          try {
-            const response = await api.post("/manager-garden/created-garden", payload);
-      
-            const data = response.data; 
+      // Limpa o formulário após o sucesso
+      setFormData({ 
+        name: "", 
+        crop: "", 
+        plantingDate: "", 
+        sizeInM2: "", 
+        location: "" 
+      });
 
-            alert("Horta criada com sucesso!");
-            console.log(data);
-          } catch (error) {
-            alert("Erro de rede ou servidor.");
-            console.error(error);
-          }
-        } else {
-          alert("Formulário de ajuda ainda não implementado.");
-        }
-      };
+    } catch (error: any) {
+      console.error("Erro ao criar a horta:", error);
+      // Tenta pegar a mensagem de erro da API, senão mostra uma genérica
+      const errorMessage = error.response?.data?.message || "Erro de rede ou servidor.";
+      toast.error(`Falha ao criar a horta: ${errorMessage}`); // Notificação de erro
+    } finally {
+      setIsLoading(false); // Reabilita o botão
+    }
+  };
 
-    return (
-        <div className="garden-container">
-            <h1 className="garden-title">Gerenciar Horta 🌿</h1>
+  return (
+    // Container principal da página
+    <div className="manage-garden-container">
+      {/* Título da página */}
+      <h1 className="manage-garden-title">
+        <span role="img" aria-label="seedling">🌿</span> Adicionar Novo Canteiro
+      </h1>
 
-            {!formType && (
-                <div className="garden-options">
-                    <button onClick={() => setFormType("has_garden")} className="garden-button">
-                        Já tenho uma horta
-                    </button>
-                    <button onClick={() => setFormType("needs_help")} className="garden-button">
-                        Quero ajuda para começar
-                    </button>
-                </div>
-            )}
-
-            {formType === "has_garden" && (
-                <form className="garden-form" onSubmit={handleFormSubmit}>
-                    <label>
-                        Nome da sua Horta
-                        <input type="text" name="name" placeholder="Horta AgroSync" required />
-                    </label>
-                    <label>
-                        O que você está plantando?
-                        <input type="text" name="crop" required />
-                    </label>
-
-                    <label>
-                        Data de início do plantio:
-                        <input type="date" name="planting_start_date" required />
-                    </label>
-
-                    <label>
-                        Tamanho da plantação (m²):
-                        <input type="number" name="size" required />
-                    </label>
-
-                    <label>
-                        Quantidade estimada de colheita (kg):
-                        <input type="number" name="estimated_yield" />
-                    </label>
-
-                    <label>
-                        Localização da plantação:
-                        <input type="text" name="location" />
-                    </label>
-
-                    <label>
-                        Tem sistema de irrigação?
-                        <select name="irrigation">
-                            <option value="sim">Sim</option>
-                            <option value="nao">Não</option>
-                        </select>
-                    </label>
-
-                    <button type="submit" className="garden-submit">Enviar</button>
-                </form>
-            )}
-
-            {formType === "needs_help" && (
-                <form className="garden-form" onSubmit={handleFormSubmit}>
-                    <label>
-                        Qual seu nível de experiência?
-                        <select name="experience_level">
-                            <option value="iniciante">Iniciante</option>
-                            <option value="intermediario">Intermediário</option>
-                            <option value="avancado">Avançado</option>
-                        </select>
-                    </label>
-
-                    <label>
-                        Tem um espaço para plantio?
-                        <select name="has_space">
-                            <option value="sim">Sim</option>
-                            <option value="nao">Não</option>
-                        </select>
-                    </label>
-
-                    <label>
-                        Tipo de solo disponível:
-                        <input type="text" name="soil_type" />
-                    </label>
-
-                    <label>
-                        Qual seu objetivo com a horta?
-                        <textarea name="goal" rows={3} />
-                    </label>
-
-                    <button type="submit" className="garden-submit">Solicitar ajuda</button>
-                </form>
-            )}
+      {/* Formulário de cadastro */}
+      <form className="manage-garden-form" onSubmit={handleSubmit}>
+        
+        {/* Campo: Nome da Horta */}
+        <div className="form-group">
+          <label htmlFor="name">Nome do Canteiro:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Ex: Canteiro Principal"
+            value={formData.name}
+            onChange={handleInputChange}
+            required
+            disabled={isLoading}
+            className="form-input"
+          />
         </div>
-    );
+
+        {/* Campo: Cultura */}
+        <div className="form-group">
+          <label htmlFor="crop">O que você está plantando?</label>
+          <input
+            type="text"
+            id="crop"
+            name="crop"
+            placeholder="Ex: Alface, Tomate Cereja"
+            value={formData.crop}
+            onChange={handleInputChange}
+            required
+            disabled={isLoading}
+            className="form-input"
+          />
+        </div>
+
+        {/* Campo: Data de Início */}
+        <div className="form-group">
+          <label htmlFor="plantingDate">Data de início do plantio:</label>
+          <input
+            type="date"
+            id="plantingDate"
+            name="plantingDate"
+            value={formData.plantingDate}
+            onChange={handleInputChange}
+            required
+            disabled={isLoading}
+            className="form-input"
+          />
+        </div>
+
+        {/* Campo: Tamanho */}
+        <div className="form-group">
+          <label htmlFor="sizeInM2">Tamanho do canteiro (m²):</label>
+          <input
+            type="number"
+            id="sizeInM2"
+            name="sizeInM2"
+            placeholder="Ex: 10.5"
+            value={formData.sizeInM2}
+            onChange={handleInputChange}
+            required
+            min="0" // Impede valores negativos
+            step="0.1" // Permite decimais
+            disabled={isLoading}
+            className="form-input"
+          />
+        </div>
+
+        {/* Campo: Localização (Opcional) */}
+        <div className="form-group">
+          <label htmlFor="location">Localização (opcional):</label>
+          <input
+            type="text"
+            id="location"
+            name="location"
+            placeholder="Ex: Fundo do quintal, Vaso na varanda"
+            value={formData.location}
+            onChange={handleInputChange}
+            disabled={isLoading}
+            className="form-input"
+          />
+        </div>
+
+        {/* Botão de Envio */}
+        <button type="submit" className="manage-garden-submit" disabled={isLoading}>
+          {isLoading ? "Salvando..." : "Adicionar Canteiro"}
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default ManageGarden;

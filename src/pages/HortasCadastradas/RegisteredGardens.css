@@ -1,196 +1,183 @@
+/* src/pages/HortasCadastradas/RegisteredGardens.css */
+
+/* --- Variáveis Globais (Cores, Fontes, etc.) --- */
+:root {
+  --primary-color: #2e7d32; /* Verde principal */
+  --primary-hover: #1b5e20; /* Verde mais escuro */
+  --secondary-color: #2196F3; /* Azul (botão diário) */
+  --secondary-hover: #1e88e5;
+  --danger-color: #f44336; /* Vermelho (botão deletar) */
+  --danger-hover: #d32f2f;
+  --edit-color: #4caf50; /* Verde (botão editar) */
+  --edit-hover: #45a049;
+
+  --background-color: #f5f9f6; /* Fundo levemente esverdeado */
+  --card-background: #ffffff;
+  --text-color: #333;
+  --text-muted: #666;
+  --border-color: #e0e0e0;
+
+  --border-radius-card: 12px;
+  --border-radius-button: 8px; /* Padronizado */
+
+  --card-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08); /* Suavizado */
+  --card-hover-shadow: 0px 6px 15px rgba(0, 0, 0, 0.12);
+
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Pilha moderna */
+}
+
+/* --- Estilos Gerais da Página --- */
 .gardens-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background: #f5f9f6;
-  color: #333;
+  padding: 2rem; /* Usar 'rem' para melhor acessibilidade */
+  font-family: var(--font-family);
+  background: var(--background-color);
+  color: var(--text-color);
+  min-height: calc(100vh - var(--navbar-height, 60px)); /* Calcula altura descontando navbar, se houver */
 }
 
-.gardens-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+.gardens-container h1 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  display: flex; /* Para alinhar o emoji */
+  align-items: center;
+  gap: 0.5rem; /* Espaço entre emoji e texto */
 }
 
-.garden-card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
-}
-
-.garden-card:hover {
-  transform: translateY(-5px);
-}
-
-.garden-info h2 {
-  margin-bottom: 10px;
-  color: #2e7d32;
-}
-
-.garden-info p {
-  margin: 6px 0;
-}
-
-.garden-actions {
-  display: flex;
-  justify-content: space-around; 
-  gap: 10px;
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid #e0e0e0;
-}
-
-.garden-actions button {
-  flex: 1;
-  padding: 10px;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: background-color 0.2s ease;
-}
-
-.edit-button,
-.delete-button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.edit-button {
-  background-color: #4caf50;
-  color: white;
-}
-
-.edit-button:hover {
-  background-color: #45a049;
-}
-
-.delete-button {
-  background-color: #f44336;
-  color: white;
-}
-
-.delete-button:hover {
-  background-color: #d32f2f;
-}
-
-.layout-preview {
-  display: flex;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.journal-button {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-  background-color: #2196F3; /* Cor azul (info) */
-  color: white;
-}
-
-.journal-button:hover {
-  background-color: #1e88e5;
-}
-
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+/* --- Mensagens (Carregando, Erro, Vazio) --- */
+.gardens-container.loading,
+.gardens-container.error,
+.no-gardens-message {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  min-height: 200px; /* Garante altura mínima */
+  font-size: 1.1rem;
+  color: var(--text-muted);
 }
 
-.modal-content {
-  background: white;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
-  width: 90%;
-  max-width: 500px;
-  z-index: 1001;
-}
-
-.modal-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.modal-form h2 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #2e7d32; /* Mesmo verde do título do card */
-}
-
-.modal-form label {
+.gardens-container.error {
+  color: var(--danger-color);
   font-weight: bold;
-  margin-bottom: -5px; /* Aproxima o label do input */
 }
 
-.modal-form input[type="text"],
-.modal-form input[type="date"],
-.modal-form select,
-.modal-form textarea {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-family: Arial, sans-serif;
+/* --- Grid dos Cards --- */
+.gardens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Ajuste minmax se necessário */
+  gap: 1.5rem; /* Aumenta um pouco o espaçamento */
 }
 
-.modal-form textarea {
-  resize: vertical; /* Permite ao usuário redimensionar a altura */
-}
-
-.modal-actions {
+/* --- Card Individual --- */
+.garden-card {
+  background: var(--card-background);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
   display: flex;
-  justify-content: flex-end; /* Alinha botões à direita */
-  gap: 10px;
-  margin-top: 20px;
-  padding-top: 0; /* Remove padding extra pois não é no card */
-  border-top: none; /* Remove borda extra */
+  flex-direction: column; /* Organiza info e actions verticalmente */
 }
 
-.modal-actions .submit-button,
-.modal-actions .cancel-button {
-  padding: 10px 16px;
-  font-size: 1rem;
-  border: none;
+.garden-card:hover {
+  transform: translateY(-4px); /* Efeito sutil */
+  box-shadow: var(--card-hover-shadow);
+}
+
+.garden-info {
+  flex-grow: 1; /* Faz a área de info crescer para empurrar as actions para baixo */
+}
+
+.garden-info h2 {
+  margin-top: 0; /* Remove margem padrão */
+  margin-bottom: 0.75rem;
+  color: var(--primary-color);
+  font-size: 1.3rem;
+}
+
+.garden-info p {
+  margin: 0.4rem 0; /* Espaçamento entre parágrafos */
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.garden-info p strong {
+  color: var(--text-color);
+  margin-right: 0.3rem; /* Pequeno espaço após o negrito */
+}
+
+/* --- Área de Ações do Card --- */
+.garden-actions {
+  display: flex;
+  justify-content: space-around; 
+  gap: 0.75rem; 
+  margin-top: 1.25rem; 
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+}
+
+.garden-actions button {
+  background-color: transparent;                    
+  color: var(--text-color, #333);                
+  border: 1px solid var(--border-color, #e0e0e0);   
+  
+  padding: 0.5rem 0.8rem; 
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  border-radius: 8px;
-  transition: background-color 0.2s ease;
+  border-radius: var(--border-radius-button, 8px); 
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease; 
+  display: flex;
+  align-items: center;
+  gap: 0.3rem; 
 }
 
-.submit-button {
-  background-color: #4caf50; 
-  color: white;
+.garden-actions button:hover {
+  transform: scale(1.05); 
 }
-.submit-button:hover {
-  background-color: #45a049;
-}
-
-.cancel-button {
-  background-color: #f44336; 
-  color: white;
-}
-.cancel-button:hover {
-  background-color: #d32f2f;
+.garden-actions button:active {
+  transform: scale(0.98); 
 }
 
-.submit-button:disabled,
-.cancel-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.edit-button {
+  padding: 0.5rem 0.8rem; 
+  font-size: 0.9rem;   
+  background-color: var(--edit-color, #4caf50);
+  color: white;      
+}
+
+.edit-button:hover {
+  background-color: var(--edit-color, #4caf50);
+  color: white;                                 
+  border-color: var(--edit-color, #4caf50);     
+  transform: scale(1.05); 
+}
+
+/* --- Botão Diário --- */
+.journal-button {
+  padding: 0.5rem 0.8rem;
+  font-size: 0.9rem;
+  background-color: var(--secondary-color, #2196F3);
+  color: white;     
+}
+
+.journal-button:hover {
+  background-color: var(--secondary-color, #2196F3);
+  color: white;                               
+  border-color: var(--secondary-color, #2196F3); 
+  transform: scale(1.05); 
+}
+
+/* --- Botão Deletar --- */
+.delete-button {
+  padding: 0.5rem 0.8rem;
+  font-size: 0.9rem;
+  background-color: var(--danger-color, #f44336);
+  color: white;      
+}
+
+.delete-button:hover {
+  background-color: var(--danger-color, #f44336);
+  color: white;                                
+  border-color: var(--danger-color, #f44336);   
+  transform: scale(1.05); 
 }

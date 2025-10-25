@@ -31,7 +31,6 @@ function App() {
 
         <Route element={<AppLayout />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/ask-ai" element={<AskAI />} />
           <Route path="/gerenciar-horta" element={<GerenciarHorta />} />
           <Route path="/hortas" element={<HortasCadastradas />} />
           <Route path="/dashboard" element={<Dashboard />} />

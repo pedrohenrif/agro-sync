@@ -13,7 +13,6 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="logo">🌱 AgroSync</div>
         <nav>
           <Link to="/">Início</Link>
-          <Link to="/ask-ai">Perguntar à IA</Link>
           <Link to="/gerenciar-horta">Gerenciar Horta</Link>
           <Link to="/hortas">Hortas Cadastradas</Link>
           <Link to="/dashboard">Visão Geral</Link>
