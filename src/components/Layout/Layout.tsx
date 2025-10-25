@@ -12,7 +12,7 @@ const Layout = ({ children }: LayoutProps) => {
       <aside className="sidebar">
         <div className="logo">🌱 AgroSync</div>
         <nav>
-          <Link to="/">Início</Link>
+          <Link to="/home">Início</Link>
           <Link to="/gerenciar-horta">Gerenciar Horta</Link>
           <Link to="/hortas">Hortas Cadastradas</Link>
           <Link to="/dashboard">Visão Geral</Link>

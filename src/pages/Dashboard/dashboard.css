@@ -1,108 +1,344 @@
-.stat-cards-wrapper {
-  position: relative;
-  overflow: hidden;
-  padding: 10px 0;
+/* ARQUIVO: src/pages/Dashboard/dashboard.css */
+
+/* --- Variáveis (Reutilize ou ajuste as do seu projeto) --- */
+:root {
+  --primary-color: #2e7d32;
+  --primary-light: #e8f5e9;
+  --primary-hover: #1b5e20; /* Adicionado para consistência */
+  --secondary-color: #f5f9f6; /* Fundo geral da página */
+  --card-background: #ffffff;
+  --text-color: #333;
+  --text-muted: #666;
+  --text-light: #fff;
+  --border-color: #e0e0e0;
+  --danger-color: #f44336; /* Cor de perigo */
+
+  /* Cores dos ícones dos KPIs */
+  --icon-total-bg: #FF9800;
+  --icon-active-bg: #4CAF50;
+  --icon-size-bg: #03A9F4;
+  --icon-crops-bg: #8BC34A; /* Verde mais claro */
+  --icon-date-bg: #9C27B0;
+  --icon-alert-bg: var(--danger-color); /* Cor de alerta */
+
+  --border-radius-card: 12px;
+  --border-radius-button: 8px; /* Adicionado para consistência */
+  --card-shadow: 0px 4px 10px rgba(0, 0, 0, 0.06);
+  --card-hover-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.stat-cards {
+/* --- Layout Geral da Página --- */
+.dashboard-container {
+  padding: 2rem;
+  font-family: var(--font-family);
+  background-color: var(--secondary-color);
+  color: var(--text-color);
+  min-height: calc(100vh - var(--navbar-height, 60px) - 4rem); /* Ajuste --navbar-height se necessário */
+}
+
+.dashboard-title {
+  color: var(--primary-color);
+  margin-top: 0;
+  margin-bottom: 2rem;
   display: flex;
-  overflow-x: auto;
-  gap: 20px;
-  padding: 10px 0;
-  scroll-behavior: smooth;
-}
-
-.stat-card {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  min-width: 220px;
-  flex-shrink: 0;
-  text-align: center;
-  transition: transform 0.3s ease-in-out;
-  cursor: pointer;
-  height: 150px;
-}
-
-.stat-card:hover {
-  transform: scale(1.05);
-}
-
-.stat-card h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.stat-card p {
-  font-size: 22px;
-  font-weight: bold;
-}
-
-/* Cores personalizadas para cada card */
-.stat-card.total {
-  background-color: #FF9800; 
-  color: white;
-}
-
-.stat-card.active {
-  background-color: #4CAF50; 
-  color: white;
-}
-
-.stat-card.average-size {
-  background-color: #03A9F4; 
-  color: white;
-}
-
-.stat-card.unique-crops {
-  background-color: #E91E63; 
-  color: white;
-}
-
-.stat-card.oldest-garden {
-  background-color: #9C27B0; 
-  color: white;
-}
-
-.scroll-zone {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 40px;
-  z-index: 2;
-  cursor: pointer;
-}
-
-.scroll-zone.left {
-  left: 0;
-}
-
-.scroll-zone.right {
-  right: 0;
-}
-
-.scroll-zone:hover {
-  background: linear-gradient(to right, rgba(255,255,255,0.5), transparent);
-}
-
-
-
-.charts {
-  margin-top: 3rem;
-}
-
-.chart-box {
-  background: #fff;
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-}
-
-.chart-box h4 {
-  margin-bottom: 1rem;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.8rem;
   font-weight: 600;
+}
+
+/* --- Mensagens (Loading, Error) --- */
+.loading-message, /* Estilo base para mensagens */
+.error-message,
+.empty-chart-message,
+.empty-activity-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 1rem;
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.loading-message { /* Pode adicionar um spinner aqui se quiser */
+  min-height: 150px;
+}
+
+.error-message {
+  color: var(--danger-color);
+  font-weight: bold;
+  background-color: rgba(244, 67, 54, 0.1); /* Fundo levemente avermelhado */
+  border: 1px dashed var(--danger-color);
+  border-radius: var(--border-radius-button);
+}
+
+.empty-chart-message,
+.empty-activity-message {
+  font-style: italic;
+  min-height: 150px; /* Garante algum espaço */
+}
+
+/* --- Grid dos KPIs --- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+/* --- Card de KPI --- */
+.kpi-card {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--card-shadow);
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-left: 5px solid transparent; /* Base para o card de alerta */
+}
+
+.kpi-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-hover-shadow);
+}
+
+.kpi-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-light);
+}
+
+/* Cores de fundo específicas para cada ícone */
+.kpi-icon.icon-total { background-color: var(--icon-total-bg); }
+.kpi-icon.icon-active { background-color: var(--icon-active-bg); }
+.kpi-icon.icon-size { background-color: var(--icon-size-bg); }
+.kpi-icon.icon-crops { background-color: var(--icon-crops-bg); }
+.kpi-icon.icon-date { background-color: var(--icon-date-bg); }
+.kpi-icon.icon-alert { background-color: var(--icon-alert-bg); }
+
+.kpi-content {
+  flex-grow: 1;
+}
+
+.kpi-content h3 {
+  margin: 0 0 0.3rem 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.kpi-value {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text-color);
+  line-height: 1.2; /* Evita que o valor fique muito alto */
+}
+
+.kpi-percentage {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 0.5rem;
+}
+
+.kpi-subtext {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 2px;
+}
+
+/* Estilo Adicional para KPI Card de Alerta */
+.kpi-card.alert-card {
+  border-left-color: var(--danger-color); /* Destaque na borda */
+}
+
+/* --- ESTRUTURA DE COLUNAS --- */
+.dashboard-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 2.5rem;
+}
+
+.column {
+  flex-grow: 1;
+  min-width: 280px; /* Largura mínima para evitar espremer demais */
+}
+
+.column-chart {
+  flex-basis: 60%; /* Tenta ocupar mais espaço */
+}
+
+.column-activity {
+  flex-basis: 35%; /* Tenta ocupar menos espaço */
+}
+
+/* --- Seção do Gráfico --- */
+.chart-section {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem 2rem;
+  height: 100%; /* Ocupa altura da coluna */
+}
+
+.chart-title {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-align: center;
+}
+
+.chart-container {
+  width: 100%;
+  height: 350px;
+}
+
+.recharts-legend-item-text {
+  color: var(--text-muted) !important;
+}
+
+/* --- SEÇÃO DE ATIVIDADE RECENTE --- */
+.activity-section {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+  height: 100%;
+  display: flex; /* Para controlar altura da lista */
+  flex-direction: column;
+}
+
+.activity-title {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--primary-color);
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0; /* Impede o título de encolher */
+}
+
+.loading-message.small {
+  font-size: 0.9rem;
+  padding: 2rem 0;
+}
+
+.activity-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  /* max-height: 350px; Removido max-height */
+  overflow-y: auto; /* Scroll aparece se necessário */
+  flex-grow: 1; /* Faz a lista ocupar o espaço restante */
+}
+
+.activity-item {
+  padding: 0.8rem 0;
+  border-bottom: 1px dashed var(--border-color);
+}
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-date {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.activity-type {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.2rem 0.5rem;
+  border-radius: 10px;
+  margin-right: 0.5rem;
+  color: white;
+  background-color: var(--text-muted);
+}
+
+/* Cores específicas por tipo */
+.activity-type.type-diário { background-color: #2196F3; } /* Azul para diário */
+.activity-type.type-colheita { background-color: var(--icon-active-bg); }
+.activity-type.type-insumo { background-color: var(--icon-total-bg); }
+.activity-type.type-praga { background-color: var(--danger-color); }
+
+.activity-description {
+  margin: 0.3rem 0 0 0;
+  font-size: 0.95rem;
+  color: var(--text-color);
+  line-height: 1.4;
+}
+
+/* --- Responsividade --- */
+@media (max-width: 992px) {
+  .dashboard-columns {
+    flex-direction: column;
+  }
+  .column-chart,
+  .column-activity {
+    flex-basis: auto;
+  }
+  .activity-list {
+      max-height: 300px; /* Limita altura em telas menores */
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1.5rem;
+  }
+  .kpi-grid {
+    gap: 1rem;
+  }
+  .kpi-card {
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+  .kpi-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .kpi-value {
+    font-size: 1.4rem;
+  }
+  .chart-section {
+    padding: 1rem 1.5rem;
+  }
+  .chart-container {
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid {
+     grid-template-columns: 1fr;
+  }
+  .dashboard-title {
+      font-size: 1.6rem;
+  }
+  .chart-title, .activity-title {
+      font-size: 1.2rem;
+  }
 }
