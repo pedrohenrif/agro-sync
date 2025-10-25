@@ -1,0 +1,146 @@
+/* ARQUIVO: src/pages/SupplyStock/AddEditSupplyModal.css */
+
+/* --- Estilos do Modal de Adicionar/Editar Insumo --- */
+
+.add-edit-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.add-edit-modal-content {
+  background: white;
+  padding: 1.5rem 2rem;
+  border-radius: var(--border-radius-card, 12px);
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 450px; /* Tamanho ajustado para o formulário */
+  z-index: 1001;
+  max-height: 90vh;
+  overflow-y: auto;
+  animation: slideUp 0.4s ease-out;
+}
+
+.add-edit-modal-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cabeçalho do Modal */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--primary-color, #2e7d32);
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem; /* Pequena área de clique */
+  color: var(--text-muted, #666);
+  transition: color 0.2s ease;
+}
+.modal-close-button:hover {
+  color: var(--text-color, #333);
+}
+
+/* Agrupamento de Label + Input */
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.add-edit-modal-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--text-color, #333);
+  font-size: 0.9rem;
+}
+
+/* Estilo Base para Inputs e Selects */
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: var(--border-radius-input, 8px);
+  font-size: 1rem;
+  font-family: var(--font-family, sans-serif);
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary-color, #2e7d32);
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+}
+
+/* Ações no Final do Modal */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+/* Botões do Modal (reutiliza estilos se tiver um arquivo global, senão define aqui) */
+.modal-button {
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-button, 8px);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  color: white;
+}
+
+.modal-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.modal-button:active:not(:disabled) {
+  transform: translateY(0px);
+}
+
+.modal-button.submit {
+  background-color: var(--accent-color, #4caf50); 
+}
+.modal-button.submit:hover:not(:disabled) {
+  background-color: var(--accent-hover, #45a049);
+}
+
+.modal-button.cancel {
+  background-color: var(--text-muted, #ccc); 
+  color: var(--text-color, #333);
+}
+.modal-button.cancel:hover:not(:disabled) {
+  background-color: #bbbbbb; /* Cinza um pouco mais escuro */
+}
+
+.modal-button:disabled {
+  background-color: #e0e0e0; /* Cinza claro para desabilitado */
+  color: #999;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- Animações (Reutilizadas) --- */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

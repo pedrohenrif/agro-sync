@@ -1,85 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import './supplyStock.css';
-import { PlusCircle, Pencil, X, Trash2 } from 'lucide-react';
+// ARQUIVO: src/pages/SupplyStock/SupplyStock.tsx
+
+import React, { useState, useEffect, useMemo } from 'react';
+import { PlusCircle, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
-import {
-  createSupply,
-  deleteSupply,
-  updateSupply,
-  getSupplys,
-  getCategories
-} from '../../service/supplyService';
+import { getSupplys, getCategories /*, getUnits */ } from '../../service/supplyService'; // Ajuste o caminho
 
-interface Category {
-  id: number;
-  name: string;
-}
+import './supplyStock.css'; // CSS Principal
+import AddEditSupplyModal from './AddEditSupplyModal';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
+import { SupplyItem, Category, Unit } from './types'; // Importando tipos
 
-interface Unit {
-  id: number;
-  name: string;
-}
-
-interface SupplyItem {
-  id: number;
-  name: string;
-  category: Category;
-  quantity: number;
-  unit: Unit;
-}
-
-// A interface 'User' foi removida daqui por não estar em uso
+// Simulação: ID do usuário logado (substitua pela lógica real)
+const FAKE_USER_ID = 1;
 
 export default function SupplyStock() {
+  // --- Estados ---
   const [supplyList, setSupplyList] = useState<SupplyItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [units, setUnits] = useState<Unit[]>([]);
-
+  const [units, setUnits] = useState<Unit[]>([]); // Ainda usando mock abaixo
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Estados de controle dos modais
+  const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<SupplyItem | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<SupplyItem | null>(null);
+
+  // Estado do filtro
   const [selectedCategory, setSelectedCategory] = useState('Todos');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<SupplyItem | null>(null);
 
-  const [formData, setFormData] = useState({
-    name: '',
-    categoryId: 0,
-    quantity: '',
-    unitId: 0
-  });
-
+  // --- Carregamento Inicial ---
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
+      setError(null);
       try {
-        // NOTA: Você ainda está simulando (mocking) as unidades.
-        // Lembre-se de criar e chamar 'getUnits()' do seu serviço.
+        // !! IMPORTANTE: Substitua isso pela chamada real à sua API de unidades !!
         const mockUnits: Unit[] = [
-          { id: 1, name: 'g' },
-          { id: 2, name: 'kg' },
-          { id: 3, name: 'un' }
+          { id: 1, name: 'g' }, { id: 2, name: 'kg' }, { id: 3, name: 'un' },
+          { id: 4, name: 'L' }, { id: 5, name: 'mL' } // Adicionei mais exemplos
         ];
+        // const unitsData = await getUnits(); // Sua chamada real iria aqui
 
         const [suppliesData, categoriesData] = await Promise.all([
-          getSupplys(),
+          getSupplys(), // Idealmente, passe o userId aqui se a API filtrar por usuário
           getCategories()
-          // getUnits() // Você chamaria sua função real aqui
         ]);
 
         setSupplyList(suppliesData);
         setCategories(categoriesData);
-        setUnits(mockUnits); // Lembre-se de trocar por 'unitsData'
+        setUnits(mockUnits); // Substitua por unitsData quando tiver a API
 
-        if (categoriesData.length > 0) {
-          setFormData(prev => ({ ...prev, categoryId: categoriesData[0].id }));
-        }
-        if (mockUnits.length > 0) {
-          setFormData(prev => ({ ...prev, unitId: mockUnits[0].id }));
-        }
-
-      } catch (error) {
-        console.error("Erro ao buscar dados iniciais:", error);
+      } catch (err) {
+        console.error("Erro ao buscar dados iniciais:", err);
+        setError('Falha ao carregar dados. Tente recarregar a página.');
         toast.error('Falha ao carregar dados. Tente recarregar a página.');
       } finally {
         setIsLoading(false);
@@ -87,227 +62,139 @@ export default function SupplyStock() {
     };
 
     fetchData();
-  }, []);
+  }, []); // Roda apenas na montagem
 
-  const openModal = (item?: SupplyItem) => {
-    if (item) {
-      setEditingItem(item);
-      setFormData({
-        name: item.name,
-        categoryId: item.category.id,
-        quantity: item.quantity.toString(),
-        unitId: item.unit.id
-      });
-    } else {
-      setEditingItem(null);
-      setFormData({
-        name: '',
-        categoryId: categories.length > 0 ? categories[0].id : 0,
-        quantity: '',
-        unitId: units.length > 0 ? units[0].id : 0
-      });
-    }
-    setIsModalOpen(true);
+  // --- Funções de Abertura dos Modais ---
+  const handleOpenAddModal = () => {
+    setEditingItem(null); // Garante que está no modo "adicionar"
+    setIsAddEditModalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setEditingItem(null);
+  const handleOpenEditModal = (item: SupplyItem) => {
+    setEditingItem(item);
+    setIsAddEditModalOpen(true);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (editingItem) {
-      try {
-        const dataToUpdate = {
-          name: formData.name,
-          quantity: parseFloat(formData.quantity),
-          unitId: formData.unitId,
-          categoryId: formData.categoryId
-        };
-
-        const updatedItem: SupplyItem = await updateSupply(editingItem.id, dataToUpdate);
-
-        setSupplyList(prev =>
-          prev.map(item =>
-            item.id === editingItem.id ? updatedItem : item
-          )
-        );
-        toast.success('Insumo atualizado com sucesso!');
-        closeModal();
-
-      } catch (error) {
-        toast.error('Erro ao atualizar insumo!');
-      }
-      return;
-    }
-
-    try {
-      const dataToCreate = {
-        name: formData.name,
-        quantity: parseFloat(formData.quantity),
-        unitId: formData.unitId,
-        categoryId: formData.categoryId,
-        userId: 1, // ATENÇÃO: 'userId' ainda está fixo (hard-coded)
-        isActive: true
-      };
-
-      const newItem: SupplyItem = await createSupply(dataToCreate);
-
-      setSupplyList(prev => [...prev, newItem]);
-      toast.success('Insumo criado com sucesso!');
-      closeModal();
-
-    } catch (error) {
-      console.error('Erro ao criar insumo:', error);
-      toast.error('Erro ao criar insumo!');
-    }
-  };
-
-  const handleDelete = async () => {
-    if (!itemToDelete) return;
-
-    try {
-      await deleteSupply(itemToDelete.id);
-      setSupplyList(prev => prev.filter(item => item.id !== itemToDelete.id));
-      toast.success('Insumo excluído com sucesso!');
-      setItemToDelete(null);
-      setIsDeleteModalOpen(false);
-    } catch (error) {
-      toast.error('Erro ao excluir insumo!');
-    }
-  };
-
-  const confirmDelete = (item: SupplyItem) => {
+  const handleOpenDeleteModal = (item: SupplyItem) => {
     setItemToDelete(item);
     setIsDeleteModalOpen(true);
   };
 
-  const filteredSupplies = selectedCategory === 'Todos'
-    ? supplyList
-    : supplyList.filter(item => item.category.name === selectedCategory);
+  // --- Callbacks dos Modais ---
+  const handleSaveSupply = (savedItem: SupplyItem) => {
+    if (editingItem) {
+      // Atualiza item existente na lista
+      setSupplyList(prev => prev.map(item => item.id === savedItem.id ? savedItem : item));
+    } else {
+      // Adiciona novo item à lista
+      setSupplyList(prev => [...prev, savedItem]);
+    }
+    // O modal já fecha sozinho e mostra o toast
+  };
 
+  const handleDeleteSupply = (deletedId: number) => {
+    setSupplyList(prev => prev.filter(item => item.id !== deletedId));
+    // O modal já fecha sozinho e mostra o toast
+  };
+
+  // --- Filtragem ---
+  // useMemo otimiza a filtragem para não rodar a cada renderização, só quando a lista ou o filtro mudam
+  const filteredSupplies = useMemo(() => {
+    if (selectedCategory === 'Todos') {
+      return supplyList;
+    }
+    return supplyList.filter(item => item.category.name === selectedCategory);
+  }, [supplyList, selectedCategory]);
+
+  // --- Renderização ---
   return (
     <div className="supply-container">
+      {/* Cabeçalho com título, filtro e botão de adicionar */}
       <div className="supply-header">
-        <h2>Estoque de Insumos</h2>
+        <h2><span role="img" aria-label="package">📦</span> Estoque de Insumos</h2>
         <div className="supply-actions">
+          <label htmlFor="category-filter" className="filter-label">Filtrar por:</label>
           <select
+            id="category-filter"
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="category-filter"
+            disabled={isLoading || categories.length === 0}
           >
-            <option value="Todos">Todos</option>
+            <option value="Todos">Todas as Categorias</option>
             {categories.map((cat) => (
               <option key={cat.id} value={cat.name}>{cat.name}</option>
             ))}
           </select>
-          <button type="button" className="new-supply-button" onClick={() => openModal()}>
+          <button
+            type="button"
+            className="new-supply-button"
+            onClick={handleOpenAddModal}
+            disabled={isLoading} // Desabilita se estiver carregando
+          >
             <PlusCircle size={18} />
             Novo Insumo
           </button>
         </div>
       </div>
 
-      {isLoading ? (
-        <div className="loading-message">Carregando insumos...</div>
-      ) : (
+      {/* Conteúdo Principal: Loading, Erro, Vazio ou Grid */}
+      {isLoading && <div className="loading-message">Carregando insumos...</div>}
+      
+      {error && !isLoading && <div className="error-message">{error}</div>}
+
+      {!isLoading && !error && filteredSupplies.length === 0 && (
+          <div className="empty-state">
+              <p>Nenhum insumo encontrado.</p>
+              {selectedCategory !== 'Todos' && (
+                  <button onClick={() => setSelectedCategory('Todos')} className="clear-filter-button">
+                      Limpar filtro
+                  </button>
+              )}
+          </div>
+      )}
+
+      {!isLoading && !error && filteredSupplies.length > 0 && (
         <div className="supply-grid">
           {filteredSupplies.map((item) => (
             <div key={item.id} className="supply-card">
-              <div className="card-header">
+              <div className="card-content"> {/* Div extra para melhor controle do layout */}
                 <h3>{item.name}</h3>
-                {/* As tags <button> aqui estão corretas 
-                  e resolvem o erro 'jsx-a11y/anchor-is-valid'
-                */}
-                <button type="button" className="edit-button" onClick={() => openModal(item)} title="Editar">
-                  <Pencil size={18} />
+                <p className="category-tag">{item.category.name}</p>
+                <p className="quantity-info">
+                  {item.quantity} {item.unit.name}
+                </p>
+              </div>
+              <div className="card-actions">
+                <button type="button" className="action-button edit" onClick={() => handleOpenEditModal(item)} title="Editar">
+                  <Pencil size={16} /> {/* Tamanho um pouco menor */}
                 </button>
-                <button type="button" className="delete-button" onClick={() => confirmDelete(item)} title="Excluir">
-                  <Trash2 size={18} />
+                <button type="button" className="action-button delete" onClick={() => handleOpenDeleteModal(item)} title="Excluir">
+                  <Trash2 size={16} /> {/* Tamanho um pouco menor */}
                 </button>
               </div>
-              <p><strong>Categoria:</strong> {item.category.name}</p>
-              <p><strong>Quantidade:</strong> {item.quantity} {item.unit.name}</p>
             </div>
           ))}
         </div>
       )}
 
-      {isModalOpen && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <div className="modal-header">
-              <h3>{editingItem ? 'Editar Insumo' : 'Novo Insumo'}</h3>
-              <button type="button" className="close-modal" onClick={closeModal}><X size={20} /></button>
-            </div>
-            <form onSubmit={handleSubmit} className="modal-form">
-              <label>Nome</label>
-              <input
-                type="text"
-                required
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
+      {/* Renderização dos Modais */}
+      <AddEditSupplyModal
+        isOpen={isAddEditModalOpen}
+        onClose={() => setIsAddEditModalOpen(false)}
+        categories={categories}
+        units={units}
+        editingItem={editingItem}
+        onSave={handleSaveSupply}
+        userId={FAKE_USER_ID} // Passando o ID (ainda fixo)
+      />
 
-              <label>Categoria</label>
-              <select
-                value={formData.categoryId}
-                required
-                onChange={(e) => setFormData({ ...formData, categoryId: Number(e.target.value) })}
-              >
-                <option value={0} disabled>Selecione uma categoria</option>
-                {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>{cat.name}</option>
-                ))}
-              </select>
-
-              <label>Quantidade</label>
-              <input
-                type="number"
-                required
-                value={formData.quantity}
-                onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-              />
-
-              <label>Unidade</label>
-              <select
-                value={formData.unitId}
-                required
-                onChange={(e) => setFormData({ ...formData, unitId: Number(e.target.value) })}
-              >
-                <option value={0} disabled>Selecione uma unidade</option>
-                {units.map((unit) => (
-                  <option key={unit.id} value={unit.id}>{unit.name}</option>
-                ))}
-              </select>
-
-              <button type="submit" className="submit-button">
-                {editingItem ? 'Salvar Alterações' : 'Adicionar Insumo'}
-              </button>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {isDeleteModalOpen && itemToDelete && (
-        <div className="modal-backdrop">
-          <div className="modal">
-            <div className="modal-header">
-              <h3>Confirmar Exclusão</h3>
-              <button type="button" className="close-modal" onClick={() => setIsDeleteModalOpen(false)}><X size={20} /></button>
-            </div>
-            <div className="modal-body">
-              <p>Você tem certeza que deseja excluir <strong>{itemToDelete.name}</strong>?</p>
-              <div className="modal-actions">
-                <button type="button" className="cancel-button" onClick={() => setIsDeleteModalOpen(false)}>Cancelar</button>
-                <button type="button" className="delete-confirm-button" onClick={handleDelete}>Excluir</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        itemToDelete={itemToDelete}
+        onConfirm={handleDeleteSupply}
+      />
     </div>
   );
 }
