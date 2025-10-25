@@ -1,62 +1,171 @@
+/* ARQUIVO: src/components/Layout/layout.css */
 
-.layout {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
+/* --- Variáveis Globais do Layout --- */
+:root {
+  /* Cores */
+  --sidebar-bg: #2d6a4f; /* Verde escuro */
+  --sidebar-text: #ffffff;
+  --sidebar-link-hover-bg: #40916c; /* Verde mais claro */
+  --sidebar-link-active-bg: #52b788; /* Verde ainda mais claro para ativo */
+  --main-bg: #f7fef9; /* Fundo principal quase branco, levemente verde */
+  --header-bg: #ffffff;
+  --header-border: #e0e0e0;
+  --text-color-dark: #333;
+  --text-color-muted: #666;
+
+  /* Tamanhos */
+  --sidebar-width: 250px;
+  --header-height: 60px;
+
+  /* Fontes (Reutilize do seu projeto global se tiver) */
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+  /* Transições */
+  --transition-speed: 0.2s;
 }
 
+/* --- Estrutura Principal --- */
+.layout-container {
+  display: flex;
+  height: 100vh; /* Ocupa toda a altura da janela */
+  overflow: hidden; /* Impede scroll na página inteira */
+  font-family: var(--font-family);
+}
+
+/* --- Barra Lateral (Sidebar) --- */
 .sidebar {
-  width: 240px;
-  background: #2d6a4f;
-  color: white;
-  padding: 20px;
+  width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: 1.5rem 1rem; /* Padding ajustado */
+  display: flex;
+  flex-direction: column; /* Organiza header, nav e footer verticalmente */
+  flex-shrink: 0; /* Impede a sidebar de encolher */
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+  z-index: 10; /* Garante que fique acima do conteúdo */
+}
+
+.sidebar-header {
+  margin-bottom: 2rem; /* Espaço após o logo */
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700; /* Mais negrito */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.5rem; /* Alinha com os links */
+}
+
+.sidebar-nav {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 0.5rem; /* Espaço entre os links */
+  flex-grow: 1; /* Faz a navegação ocupar o espaço disponível */
 }
 
-.sidebar .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 24px;
-}
-
-.sidebar a {
-  color: white;
+.nav-link {
+  color: var(--sidebar-text);
   text-decoration: none;
-  padding: 10px 12px;
-  border-radius: 8px;
-  display: block;
-  transition: background 0.2s ease-in-out;
+  padding: 0.75rem 1rem; /* Padding ajustado */
+  border-radius: 6px; /* Bordas mais suaves */
+  display: flex; /* Alinha ícone e texto */
+  align-items: center;
+  gap: 0.75rem; /* Espaço entre ícone e texto */
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color var(--transition-speed) ease-out,
+              color var(--transition-speed) ease-out;
 }
 
-.sidebar a:hover {
-  background: #40916c;
+/* Estado Hover do Link */
+.nav-link:hover {
+  background: var(--sidebar-link-hover-bg);
 }
 
+/* Estado Ativo do Link (página atual) */
+.nav-link.active {
+  background: var(--sidebar-link-active-bg);
+  font-weight: 600; /* Destaque no link ativo */
+}
+
+.sidebar-footer {
+  margin-top: auto; /* Empurra o footer para baixo */
+  /* Estilos para o footer, se houver */
+}
+
+/* --- Conteúdo Principal (Direita) --- */
 .main-content {
-  flex: 1;
+  flex: 1; /* Ocupa o restante da largura */
   display: flex;
   flex-direction: column;
-  background: #f0fdf4;
-  overflow: hidden; /* <-- impede scroll horizontal na área principal */
+  background: var(--main-bg);
+  overflow: hidden; /* Impede scroll horizontal geral */
 }
 
-.header {
-  background: white;
-  padding: 16px 24px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+/* --- Cabeçalho Superior --- */
+.main-header {
+  height: var(--header-height);
+  background: var(--header-bg);
+  padding: 0 1.5rem; /* Padding horizontal */
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08); /* Sombra mais sutil */
+  display: flex;
+  justify-content: space-between; /* Empurra left e right para as pontas */
+  align-items: center;
+  flex-shrink: 0; /* Impede o header de encolher */
+  border-bottom: 1px solid var(--header-border); /* Linha sutil abaixo */
+  z-index: 5;
+}
+
+.header-left {
+  /* Estilos para a parte esquerda (ex: busca) */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem; /* Espaço entre ícones e user info */
+}
+
+.header-icon {
+  color: var(--text-color-muted);
+  cursor: pointer;
+  transition: color var(--transition-speed) ease;
+}
+.header-icon:hover {
+  color: var(--text-color-dark);
 }
 
 .user-info {
-  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   font-size: 0.9rem;
-  color: #333;
+  color: var(--text-color-dark);
+  cursor: pointer; /* Indica que pode ser clicável (para dropdown) */
 }
 
+/* --- Área de Conteúdo da Página --- */
 .page-content {
-  flex: 1;
-  padding: 24px;
-  overflow-y: auto; /* somente scroll vertical se necessário */
-  overflow-x: hidden; /* impede scroll horizontal */
+  flex: 1; /* Ocupa todo o espaço vertical restante */
+  padding: 1.5rem; /* Padding interno */
+  overflow-y: auto; /* Habilita scroll VERTICAL se necessário */
+  overflow-x: hidden; /* Garante que não haja scroll horizontal */
+}
+
+/* --- Ajuste fino de Scrollbar (Opcional, Webkit) --- */
+.page-content::-webkit-scrollbar {
+  width: 8px;
+}
+.page-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+.page-content::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+.page-content::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
 }
