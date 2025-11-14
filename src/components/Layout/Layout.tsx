@@ -4,6 +4,7 @@ import React, { useState, useEffect, ReactNode } from "react";
 import "./layout.css";
 // Importa NavLink, useLocation e useNavigate do react-router-dom
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { ListChecks } from "lucide-react";
 import {
   LayoutDashboard,
   PlusSquare,
@@ -78,6 +79,7 @@ const Layout = ({ children }: LayoutProps) => {
           <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <LayoutDashboard size={18} /> <span>Visão Geral</span> </NavLink>
           <NavLink to="/hortas" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <List size={18} /> <span>Meus Canteiros</span> </NavLink>
           <NavLink to="/supply-stock" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <Archive size={18} /> <span>Estoque</span> </NavLink>
+          <NavLink to="/tasks" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <ListChecks size={18} /><span>Tarefas</span></NavLink>
           <NavLink to="/ask-ai" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <BrainCircuit size={18} /> <span>Consultar IA</span> </NavLink>
         </nav>
 

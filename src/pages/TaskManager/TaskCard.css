@@ -1,0 +1,93 @@
+/* ARQUIVO: src/pages/TaskManager/TaskCard.css */
+
+.task-card {
+  background-color: var(--card-background, #fff);
+  border-radius: var(--border-radius-button, 8px); /* Borda mais suave */
+  box-shadow: var(--card-shadow, 0 2px 4px rgba(0,0,0,0.05));
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  border-left: 4px solid var(--text-muted, #ccc); /* Borda de prioridade */
+  transition: box-shadow 0.2s ease, border-left-color 0.2s ease;
+}
+
+.task-card:hover {
+  box-shadow: var(--card-hover-shadow, 0 4px 12px rgba(0,0,0,0.1));
+}
+
+.task-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.task-priority-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  color: white;
+}
+/* Cores das Tags de Prioridade */
+.priority-low { background-color: var(--icon-active-bg, #4CAF50); }
+.priority-medium { background-color: var(--edit-color, #ffa000); }
+.priority-high { background-color: var(--delete-color, #e63946); }
+
+/* Aplica a cor da borda esquerda baseada na prioridade */
+.task-card:has(.priority-low) { border-left-color: var(--icon-active-bg, #4CAF50); }
+.task-card:has(.priority-medium) { border-left-color: var(--edit-color, #ffa000); }
+.task-card:has(.priority-high) { border-left-color: var(--delete-color, #e63946); }
+
+.task-card-actions {
+  display: flex;
+  gap: 0.25rem;
+}
+.task-card-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted, #666);
+  padding: 0.2rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+.task-card-actions button:hover {
+  color: var(--text-color, #333);
+  background-color: #f0f0f0;
+}
+
+.task-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-color, #333);
+}
+
+.task-card-description {
+  font-size: 0.9rem;
+  color: var(--text-muted, #666);
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+}
+
+.task-card-footer {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color, #e0e0e0);
+}
+
+.task-card-info {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+}
+.task-card-info svg {
+  flex-shrink: 0;
+}

@@ -13,6 +13,7 @@ import HortasCadastradas from "./pages/HortasCadastradas/RegisteredGardens";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SupplyStock from "./pages/SupplyStock/SupplyStock";
 import Login from "./components/Login/Login";
+import TaskManager from "./pages/TaskManager/TaskManager";
 import SearchResults from "./pages/SearchResults/SearchResults";
 
 
@@ -34,6 +35,7 @@ function App() {
           <Route path="/hortas" element={<HortasCadastradas />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/supply-stock" element={<SupplyStock />} />
+          <Route path="/tasks" element={<TaskManager />} />
           <Route path="/search-results" element={<SearchResults />} />
         </Route>
         
