@@ -1,0 +1,183 @@
+/* ARQUIVO: src/pages/SeasonalCalendar/SeasonalCalendar.css */
+
+.calendar-container {
+  padding: 2rem;
+  font-family: var(--font-family, sans-serif);
+  background: var(--secondary-color, #f5f9f6);
+  min-height: calc(100vh - var(--navbar-height, 60px));
+}
+
+.calendar-header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.calendar-header h2 {
+  color: var(--primary-color, #2e7d32);
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.6rem;
+}
+
+.calendar-header p {
+  font-size: 1rem;
+  color: var(--text-muted, #666);
+  margin: 0;
+}
+
+.calendar-wrapper {
+  background-color: var(--card-background, #fff);
+  padding: 1.5rem;
+  border-radius: var(--border-radius-card, 12px);
+  box-shadow: var(--card-shadow, 0px 4px 10px rgba(0, 0, 0, 0.06));
+}
+
+/* ======================================================== */
+/* CUSTOMIZAÇÃO "ROBUSTA" DA BIBLIOTECA react-big-calendar */
+/* ======================================================== */
+
+/* --- Barra de Ferramentas (Toolbar) --- */
+.rbc-toolbar {
+  margin-bottom: 1.5rem;
+  padding: 0 0.5rem;
+  display: flex; /* Garante alinhamento */
+  align-items: center;
+}
+
+/* Título do Mês (ex: "Outubro 2025") */
+.rbc-toolbar-label {
+  flex-grow: 1; /* Empurra os botões para as pontas */
+  text-align: center;
+  font-size: 1.5rem; /* Maior */
+  font-weight: 600;
+  color: var(--primary-color, #2e7d32);
+}
+
+/* Grupo de Botões (Hoje, Voltar, Próximo) */
+.rbc-btn-group {
+  display: inline-flex;
+  gap: 0.5rem; /* Espaço entre os botões */
+}
+
+.rbc-btn-group button {
+  background: var(--card-background, #fff);
+  color: var(--text-color-dark, #333);
+  border: 1px solid var(--border-color, #e0e0e0);
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius-button, 8px);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+}
+
+.rbc-btn-group button:hover {
+  background: var(--secondary-color, #f5f9f6);
+  border-color: #ccc;
+  transform: translateY(-1px); /* Efeito sutil */
+}
+
+/* Botão "Hoje" (Today) quando ATIVO */
+.rbc-btn-group button.rbc-active {
+  background-color: var(--primary-color, #2e7d32);
+  color: white;
+  border-color: var(--primary-color, #2e7d32);
+  box-shadow: none;
+}
+.rbc-btn-group button.rbc-active:hover {
+  background-color: var(--primary-hover, #1b5e20);
+  border-color: var(--primary-hover, #1b5e20);
+}
+
+
+/* --- Cabeçalho dos Dias (Dom, Seg, Ter...) --- */
+.rbc-header {
+  padding: 0.75rem 0.5rem;
+  text-align: right; /* Alinha o número do dia */
+  font-size: 0.8rem; /* Letra menor */
+  font-weight: 600;
+  color: var(--text-muted, #666);
+  text-transform: uppercase; /* DOM, SEG, TER... */
+  border: none;
+  border-bottom: 2px solid var(--border-color, #e0e0e0);
+  background-color: #fdfdfd; /* Fundo sutil */
+}
+
+/* --- Células dos Dias (Grid) --- */
+.rbc-day-bg {
+  border: 1px solid #f0f0f0; /* Borda interna sutil */
+  transition: background-color 0.2s ease;
+}
+.rbc-day-bg:hover {
+  background-color: #fcfcfc; /* Ilumina levemente no hover */
+}
+
+/* Célula do dia "Hoje" */
+.rbc-day-bg.rbc-today {
+  background-color: var(--primary-light, #e8f5e9);
+  border-top: 2px solid var(--primary-color, #2e7d32); /* Destaque superior */
+}
+
+/* Dias fora do mês (ex: 31 de Outubro no calendário de Novembro) */
+.rbc-off-range-bg {
+  background-color: #f9f9f9; /* Cinza mais sutil */
+  opacity: 0.7; /* Mais apagado */
+}
+
+/* Número do dia (ex: 1, 2, 3...) */
+.rbc-date-cell {
+  padding: 0.5rem;
+  text-align: right;
+  font-weight: 500;
+}
+.rbc-date-cell.rbc-now { /* Número do dia "Hoje" */
+  font-weight: 700;
+  color: var(--primary-color, #2e7d32);
+}
+
+/* --- Eventos (Plantio/Colheita) --- */
+.rbc-event {
+  /* Cores são controladas pelo eventStyleGetter no .tsx */
+  padding: 4px 8px; /* Mais padding */
+  font-size: 0.8rem;
+  font-weight: 600; /* Mais negrito */
+  border-radius: 4px; /* Borda mais suave */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra "robusta" */
+  /* Borda esquerda para profundidade (exemplo com verde) */
+  border-left: 3px solid rgba(0, 0, 0, 0.3); 
+}
+
+/* Ajusta as cores da borda esquerda com base no tipo (opcional, mas legal) */
+.rbc-event[style*="rgb(76, 175, 80)"] { /* Se for verde (Plantio) */
+  border-left-color: #1b5e20; /* Verde escuro */
+}
+.rbc-event[style*="rgb(255, 152, 0)"] { /* Se for laranja (Colheita) */
+  border-left-color: #e65100; /* Laranja escuro */
+}
+
+/* Cor do texto do evento (garante branco) */
+.rbc-event, .rbc-event-content {
+  color: white;
+}
+
+/* Link "+X Mais" */
+.rbc-show-more {
+  display: block;
+  text-align: center;
+  background-color: #f0f0f0;
+  color: var(--text-color, #333);
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 4px;
+  padding: 2px 0;
+  margin: 2px 4px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.rbc-show-more:hover {
+  background-color: #e0e0e0;
+  color: var(--text-color-dark, #000);
+}
