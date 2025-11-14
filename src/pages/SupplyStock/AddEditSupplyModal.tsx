@@ -1,7 +1,5 @@
-// ARQUIVO: src/pages/SupplyStock/AddEditSupplyModal.tsx
-
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, Archive } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { createSupply, updateSupply } from '../../service/supplyService'; 
 import { SupplyItem, Category, Unit } from './types'; 
@@ -109,13 +107,15 @@ const AddEditSupplyModal: React.FC<AddEditSupplyModalProps> = ({
     <div className="add-edit-modal-backdrop">
       <div className="add-edit-modal-content">
         <div className="modal-header">
-          <h2>{editingItem ? 'Editar Insumo' : 'Adicionar Novo Insumo'}</h2>
+          <h2 className="modal-title">
+            <Archive size={20} />
+            {editingItem ? 'Editar Insumo' : 'Adicionar Novo Insumo'}
+          </h2>
           <button type="button" className="modal-close-button" onClick={onClose} disabled={isLoading}>
             <X size={24} />
           </button>
         </div>
         <form onSubmit={handleSubmit} className="add-edit-modal-form">
-          {/* Campo Nome */}
           <div className="form-group">
             <label htmlFor="supply-name">Nome do Insumo:</label>
             <input
@@ -131,7 +131,6 @@ const AddEditSupplyModal: React.FC<AddEditSupplyModalProps> = ({
             />
           </div>
 
-          {/* Campo Categoria */}
           <div className="form-group">
             <label htmlFor="supply-category">Categoria:</label>
             <select
@@ -150,7 +149,6 @@ const AddEditSupplyModal: React.FC<AddEditSupplyModalProps> = ({
             </select>
           </div>
 
-          {/* Campo Quantidade */}
           <div className="form-group">
             <label htmlFor="supply-quantity">Quantidade:</label>
             <input
@@ -161,14 +159,13 @@ const AddEditSupplyModal: React.FC<AddEditSupplyModalProps> = ({
               onChange={handleInputChange}
               required
               min="0"
-              step="any" // Permite qualquer decimal
+              step="any"
               disabled={isLoading}
               className="form-input"
               placeholder="Ex: 100"
             />
           </div>
 
-          {/* Campo Unidade */}
           <div className="form-group">
             <label htmlFor="supply-unit">Unidade:</label>
             <select
@@ -187,7 +184,6 @@ const AddEditSupplyModal: React.FC<AddEditSupplyModalProps> = ({
             </select>
           </div>
 
-          {/* Botões de Ação */}
           <div className="modal-actions">
             <button
               type="button"

@@ -1,56 +1,69 @@
 /* src/pages/HortasCadastradas/RegisteredGardens.css */
 
-/* --- Variáveis Globais (Cores, Fontes, etc.) --- */
 :root {
-  --primary-color: #2e7d32; /* Verde principal */
-  --primary-hover: #1b5e20; /* Verde mais escuro */
-  --secondary-color: #2196F3; /* Azul (botão diário) */
+  --primary-color: #2e7d32;
+  --primary-hover: #1b5e20;
+  --secondary-color: #2196F3;
   --secondary-hover: #1e88e5;
-  --danger-color: #f44336; /* Vermelho (botão deletar) */
+  --danger-color: #f44336;
   --danger-hover: #d32f2f;
-  --edit-color: #4caf50; /* Verde (botão editar) */
-  --edit-hover: #45a049;
-
-  --background-color: #f5f9f6; /* Fundo levemente esverdeado */
+  --edit-color: #ffa000;
+  --edit-hover-bg: rgba(255, 160, 0, 0.1);
+  --delete-color: #e63946;
+  --delete-hover-bg: rgba(230, 57, 70, 0.1);
+  --journal-color: #0056b3;
+  --journal-hover-bg: rgba(0, 86, 179, 0.1);
+  --background-color: #f5f9f6;
   --card-background: #ffffff;
   --text-color: #333;
   --text-muted: #666;
   --border-color: #e0e0e0;
-
   --border-radius-card: 12px;
-  --border-radius-button: 8px; /* Padronizado */
-
-  --card-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08); /* Suavizado */
-  --card-hover-shadow: 0px 6px 15px rgba(0, 0, 0, 0.12);
-
-  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* Pilha moderna */
+  --border-radius-button: 8px;
+  --card-shadow: 0px 3px 8px rgba(0, 0, 0, 0.05);
+  --card-hover-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-/* --- Estilos Gerais da Página --- */
 .gardens-container {
-  padding: 2rem; /* Usar 'rem' para melhor acessibilidade */
+  padding: 2rem;
   font-family: var(--font-family);
   background: var(--background-color);
   color: var(--text-color);
-  min-height: calc(100vh - var(--navbar-height, 60px)); /* Calcula altura descontando navbar, se houver */
+  min-height: calc(100vh - var(--navbar-height, 60px));
 }
 
-.gardens-container h1 {
-  color: var(--primary-color);
-  margin-bottom: 1.5rem;
-  display: flex; /* Para alinhar o emoji */
+.gardens-header {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem; /* Espaço entre emoji e texto */
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  gap: 1rem;
 }
 
-/* --- Mensagens (Carregando, Erro, Vazio) --- */
+.garden-page-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.gardens-header h2 {
+  color: var(--primary-color);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.6rem; 
+}
+
 .gardens-container.loading,
 .gardens-container.error,
 .no-gardens-message {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px; /* Garante altura mínima */
+  min-height: 200px;
   font-size: 1.1rem;
   color: var(--text-muted);
 }
@@ -60,124 +73,102 @@
   font-weight: bold;
 }
 
-/* --- Grid dos Cards --- */
-.gardens-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Ajuste minmax se necessário */
-  gap: 1.5rem; /* Aumenta um pouco o espaçamento */
+.no-gardens-message {
+  font-style: italic;
 }
 
-/* --- Card Individual --- */
+.gardens-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
 .garden-card {
   background: var(--card-background);
-  padding: 1.5rem;
   border-radius: var(--border-radius-card);
   box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  overflow: hidden;
   display: flex;
-  flex-direction: column; /* Organiza info e actions verticalmente */
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .garden-card:hover {
-  transform: translateY(-4px); /* Efeito sutil */
+  transform: translateY(-4px);
   box-shadow: var(--card-hover-shadow);
 }
 
-.garden-info {
-  flex-grow: 1; /* Faz a área de info crescer para empurrar as actions para baixo */
+.card-content {
+  padding: 1rem 1.25rem;
+  flex-grow: 1;
 }
 
-.garden-info h2 {
-  margin-top: 0; /* Remove margem padrão */
-  margin-bottom: 0.75rem;
+.card-content h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+  color: var(--text-color);
+}
+
+.category-tag {
+  display: inline-block;
+  background-color: #e8f5e9;
   color: var(--primary-color);
-  font-size: 1.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
 }
 
-.garden-info p {
-  margin: 0.4rem 0; /* Espaçamento entre parágrafos */
-  font-size: 0.95rem;
+.card-details {
+  margin-top: 0.5rem;
+}
+
+.card-details p {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
   color: var(--text-muted);
 }
 
-.garden-info p strong {
+.card-details p strong {
   color: var(--text-color);
-  margin-right: 0.3rem; /* Pequeno espaço após o negrito */
+  margin-right: 0.3rem;
 }
 
-/* --- Área de Ações do Card --- */
-.garden-actions {
+.card-actions {
   display: flex;
-  justify-content: space-around; 
-  gap: 0.75rem; 
-  margin-top: 1.25rem; 
-  padding-top: 1rem;
-  border-top: 1px solid var(--border-color, #e0e0e0);
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  background-color: #fdfdfd;
 }
 
-.garden-actions button {
-  background-color: transparent;                    
-  color: var(--text-color, #333);                
-  border: 1px solid var(--border-color, #e0e0e0);   
-  
-  padding: 0.5rem 0.8rem; 
-  font-size: 0.9rem;
-  font-weight: 500;
+.action-button {
+  background: none;
+  border: none;
   cursor: pointer;
-  border-radius: var(--border-radius-button, 8px); 
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.1s ease; 
+  padding: 0.3rem;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 0.3rem; 
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  color: var(--text-muted, #666);
 }
 
-.garden-actions button:hover {
-  transform: scale(1.05); 
-}
-.garden-actions button:active {
-  transform: scale(0.98); 
-}
+.action-button.edit { color: var(--edit-color); }
+.action-button.edit:hover { background-color: var(--edit-hover-bg); }
 
-.edit-button {
-  padding: 0.5rem 0.8rem; 
-  font-size: 0.9rem;   
-  background-color: var(--edit-color, #4caf50);
-  color: white;      
-}
+.action-button.journal { color: var(--journal-color); }
+.action-button.journal:hover { background-color: var(--journal-hover-bg); }
 
-.edit-button:hover {
-  background-color: var(--edit-color, #4caf50);
-  color: white;                                 
-  border-color: var(--edit-color, #4caf50);     
-  transform: scale(1.05); 
-}
+.action-button.delete { color: var(--delete-color); }
+.action-button.delete:hover { background-color: var(--delete-hover-bg); }
 
-/* --- Botão Diário --- */
-.journal-button {
-  padding: 0.5rem 0.8rem;
-  font-size: 0.9rem;
-  background-color: var(--secondary-color, #2196F3);
-  color: white;     
-}
-
-.journal-button:hover {
-  background-color: var(--secondary-color, #2196F3);
-  color: white;                               
-  border-color: var(--secondary-color, #2196F3); 
-  transform: scale(1.05); 
-}
-
-/* --- Botão Deletar --- */
-.delete-button {
-  padding: 0.5rem 0.8rem;
-  font-size: 0.9rem;
-  background-color: var(--danger-color, #f44336);
-  color: white;      
-}
-
-.delete-button:hover {
-  background-color: var(--danger-color, #f44336);
-  color: white;                                
-  border-color: var(--danger-color, #f44336);   
-  transform: scale(1.05); 
+@media (max-width: 600px) {
+  .gardens-grid {
+    grid-template-columns: 1fr;
+  }
 }

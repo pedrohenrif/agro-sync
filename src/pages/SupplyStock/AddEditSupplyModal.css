@@ -1,7 +1,5 @@
 /* ARQUIVO: src/pages/SupplyStock/AddEditSupplyModal.css */
 
-/* --- Estilos do Modal de Adicionar/Editar Insumo --- */
-
 .add-edit-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -19,7 +17,7 @@
   border-radius: var(--border-radius-card, 12px);
   box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
   width: 90%;
-  max-width: 450px; /* Tamanho ajustado para o formulário */
+  max-width: 450px;
   z-index: 1001;
   max-height: 90vh;
   overflow-y: auto;
@@ -31,7 +29,6 @@
   flex-direction: column;
 }
 
-/* Cabeçalho do Modal */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -45,13 +42,16 @@
   margin: 0;
   font-size: 1.3rem;
   color: var(--primary-color, #2e7d32);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .modal-close-button {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.25rem; /* Pequena área de clique */
+  padding: 0.25rem;
   color: var(--text-muted, #666);
   transition: color 0.2s ease;
 }
@@ -59,7 +59,6 @@
   color: var(--text-color, #333);
 }
 
-/* Agrupamento de Label + Input */
 .form-group {
   margin-bottom: 1rem;
 }
@@ -72,7 +71,6 @@
   font-size: 0.9rem;
 }
 
-/* Estilo Base para Inputs e Selects */
 .form-input,
 .form-select {
   width: 100%;
@@ -92,7 +90,6 @@
   box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
 }
 
-/* Ações no Final do Modal */
 .modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -100,7 +97,6 @@
   margin-top: 1.5rem;
 }
 
-/* Botões do Modal (reutiliza estilos se tiver um arquivo global, senão define aqui) */
 .modal-button {
   padding: 0.7rem 1.2rem;
   font-size: 0.95rem;
@@ -119,28 +115,30 @@
   transform: translateY(0px);
 }
 
+/* --- CORREÇÃO DE COR AQUI --- */
 .modal-button.submit {
-  background-color: var(--accent-color, #4caf50); 
+  background-color: var(--primary-color, #2e7d32); /* VERDE PADRÃO */
 }
 .modal-button.submit:hover:not(:disabled) {
-  background-color: var(--accent-hover, #45a049);
+  background-color: var(--primary-hover, #1b5e20); /* VERDE ESCURO HOVER */
 }
 
+/* --- CORREÇÃO DE COR AQUI --- */
 .modal-button.cancel {
-  background-color: var(--text-muted, #ccc); 
-  color: var(--text-color, #333);
+  background-color: var(--danger-color, #f44336); /* VERMELHO PADRÃO */
+  color: white; /* Garante que o texto seja branco */
 }
 .modal-button.cancel:hover:not(:disabled) {
-  background-color: #bbbbbb; /* Cinza um pouco mais escuro */
+  background-color: var(--danger-hover, #d32f2f); /* VERMELHO ESCURO HOVER */
 }
+/* --- FIM DAS CORREÇÕES --- */
 
 .modal-button:disabled {
-  background-color: #e0e0e0; /* Cinza claro para desabilitado */
+  background-color: #e0e0e0;
   color: #999;
   cursor: not-allowed;
   transform: none;
 }
 
-/* --- Animações (Reutilizadas) --- */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); } }

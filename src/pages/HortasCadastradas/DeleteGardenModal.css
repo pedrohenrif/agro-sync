@@ -1,74 +1,137 @@
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    transition: background-color 0.3s ease; 
-  }
-  
-  .modal-content {
-    background-color: white;
-    padding: 30px 40px;
-    border-radius: 12px;
-    max-width: 450px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); 
-    transition: transform 0.3s ease-in-out; 
-    transform: scale(0.95);
-  }
-  
-  .modal-overlay:hover .modal-content {
-    transform: scale(1);
-  }
-  
-  h2 {
-    font-size: 18px;
-    font-weight: 500;
-    margin-bottom: 20px;
-    color: #333; 
-  }
-  
-  .modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
-  }
-  
-  button {
-    padding: 12px 24px;
-    font-size: 16px;
-    cursor: pointer;
-    border: none;
-    border-radius: 8px;
-    transition: background-color 0.3s, transform 0.3s;
-  }
-  
-  button:hover {
-    transform: scale(1.05); 
-  }
-  
-  .confirm {
-    background-color: #28a745; 
-    color: white;
-  }
-  
-  .confirm:hover {
-    background-color: #218838; 
-  }
-  
-  .cancel {
-    background-color: #e0e0e0;
-    color: black;
-  }
-  
-  .cancel:hover {
-    background-color: #b0b0b0; 
-  }
-  
+/* ARQUIVO: src/pages/HortasCadastradas/DeleteGardenModal.css */
+
+.delete-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.delete-modal-content {
+  background: var(--card-background, white);
+  padding: 1.5rem 2rem;
+  border-radius: var(--border-radius-card, 12px);
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 450px; /* Tamanho bom para confirmação */
+  z-index: 1001;
+  animation: popIn 0.3s ease-out;
+}
+
+/* Cabeçalho (Título + Botão X) */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+
+.modal-title {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--danger-color, #f44336); /* Título Vermelho */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Espaço entre ícone e texto */
+}
+
+.modal-close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: var(--text-muted, #666);
+  transition: color 0.2s ease;
+}
+.modal-close-button:hover {
+  color: var(--text-color, #333);
+}
+
+/* Corpo da Mensagem */
+.modal-body {
+  padding: 0.5rem 0; /* Espaçamento interno */
+}
+
+.modal-body p {
+  margin: 1.5rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-color, #333);
+  text-align: center;
+}
+.modal-body p strong {
+  font-weight: 600;
+  color: var(--primary-color, #2e7d32); /* Destaque no nome */
+}
+
+.warning-text {
+  font-size: 0.85rem;
+  color: var(--text-muted, #666);
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Botões de Ação */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end; /* Alinha botões à direita */
+  gap: 0.75rem;
+  margin-top: 1.5rem; 
+}
+
+.modal-button {
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-button, 8px);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  color: white;
+}
+.modal-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+.modal-button:active:not(:disabled) {
+  transform: translateY(0px);
+}
+
+/* Botão de Excluir (Vermelho) */
+.modal-button.delete {
+  background-color: var(--danger-color, #f44336);
+}
+.modal-button.delete:hover:not(:disabled) {
+  background-color: var(--danger-hover, #d32f2f);
+}
+
+/* Botão de Cancelar (Cinza/Neutro) */
+.modal-button.cancel {
+  background-color: #A9A9A9; /* Um cinza neutro */
+  color: white;
+}
+.modal-button.cancel:hover:not(:disabled) {
+  background-color: #808080; /* Cinza mais escuro */
+}
+
+.modal-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- Animações --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes popIn { /* Animação de "pulo" */
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
