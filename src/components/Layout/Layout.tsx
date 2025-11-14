@@ -76,7 +76,6 @@ const Layout = ({ children }: LayoutProps) => {
         {/* Navegação */}
         <nav className="sidebar-nav">
           <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <LayoutDashboard size={18} /> <span>Visão Geral</span> </NavLink>
-          <NavLink to="/gerenciar-horta" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <PlusSquare size={18} /> <span>Adicionar Canteiro</span> </NavLink>
           <NavLink to="/hortas" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <List size={18} /> <span>Meus Canteiros</span> </NavLink>
           <NavLink to="/supply-stock" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <Archive size={18} /> <span>Estoque</span> </NavLink>
           <NavLink to="/ask-ai" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}> <BrainCircuit size={18} /> <span>Consultar IA</span> </NavLink>

@@ -83,6 +83,30 @@
   gap: 1.5rem;
 }
 
+.new-item-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--accent-color, #4CAF50);
+  color: white;
+  border: none;
+  padding: 0.7rem 1.1rem;
+  border-radius: var(--border-radius-button, 8px);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.new-item-button:hover:not(:disabled) {
+  background-color: var(--accent-hover, #45a047);
+  transform: translateY(-2px);
+}
+.new-item-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .garden-card {
   background: var(--card-background);
   border-radius: var(--border-radius-card);

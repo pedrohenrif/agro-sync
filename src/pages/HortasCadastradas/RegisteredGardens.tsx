@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import api from '../../service/api';
 import { toast } from 'react-toastify';
-import { Trash2 } from 'lucide-react'; // Importa SÓ o ícone de deletar
+import { Trash2, PlusCircle } from 'lucide-react'; // Trocamos ícones
+import { Garden } from "./types";
 
 import "./RegisteredGardens.css";
-// Remove as importações dos modais individuais
-// import EditGardenModal from "./EditGardenModal";
-// import FieldJournalModal from "./FieldJournalModal"; 
 import DeleteGardenModal from "./DeleteGardenModal";
-import GardenDetailModal from "./GardenDetailModal"; // Importa o novo "Super Modal"
-
-import { Garden } from "./types";
+import GardenDetailModal from "./GardenDetailModal";
+import AddGardenModal from "./AddGardenModal"; // <-- 1. Importar o novo modal
 
 const FAKE_USER_ID = 1;
 
@@ -19,9 +16,10 @@ const RegisteredGardens = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Estados de controle dos modais
   const [deletingGardenId, setDeletingGardenId] = useState<number | null>(null);
-  const [viewingGarden, setViewingGarden] = useState<Garden | null>(null); // Estado para o novo modal
+  const [viewingGarden, setViewingGarden] = useState<Garden | null>(null);
+  
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // <-- 2. Novo estado
 
   useEffect(() => {
     fetchGardens();
@@ -42,7 +40,6 @@ const RegisteredGardens = () => {
     }
   };
 
-  // Esta função é passada para o GardenDetailModal
   const handleUpdateGarden = (updatedGarden: Garden) => {
     setGardens(prevGardens =>
       prevGardens.map(garden =>
@@ -50,10 +47,15 @@ const RegisteredGardens = () => {
       )
     );
   };
+  
+  // 3. Nova função de callback para o modal de adicionar
+  const handleAddSave = (newGarden: Garden) => {
+    setGardens(prevGardens => [...prevGardens, newGarden]); // Adiciona o novo canteiro à lista
+    setIsAddModalOpen(false); // Fecha o modal
+  };
 
   const handleDeleteConfirm = async () => {
     if (!deletingGardenId) return;
-
     try {
       await api.delete(`/manager-garden/delete-garden/${deletingGardenId}`);
       setGardens(prevGardens =>
@@ -66,9 +68,6 @@ const RegisteredGardens = () => {
       toast.error("Falha ao deletar o canteiro.");
     }
   };
-
-  // Esta função não é mais necessária aqui
-  // const handleJournalSave = () => { ... };
 
   if (isLoading) {
     return <div className="gardens-container loading">Carregando canteiros...</div>;
@@ -84,6 +83,16 @@ const RegisteredGardens = () => {
       <div className="gardens-header">
         <h2><span role="img" aria-label="seedling">🌿</span> Canteiros Cadastrados</h2>
         <div className="garden-page-actions">
+          {/* 4. Adicionar o novo botão */}
+          <button
+            type="button"
+            className="new-item-button"
+            onClick={() => setIsAddModalOpen(true)}
+            disabled={isLoading}
+          >
+            <PlusCircle size={18} />
+            Novo Canteiro
+          </button>
         </div>
       </div>
 
@@ -94,8 +103,8 @@ const RegisteredGardens = () => {
           {gardens.map((garden) => (
             <div 
               key={garden.id} 
-              className="garden-card clickable" // Card clicável
-              onClick={() => setViewingGarden(garden)} // Abre o super-modal
+              className="garden-card clickable"
+              onClick={() => setViewingGarden(garden)}
             >
               <div className="card-content">
                 <h3>{garden.name}</h3>
@@ -106,13 +115,12 @@ const RegisteredGardens = () => {
                   {garden.location && <p><strong>Localização:</strong> {garden.location}</p>}
                 </div>
               </div>
-              
               <div className="card-actions">
                 <button 
                   type="button" 
                   className="action-button delete" 
                   onClick={(e) => {
-                    e.stopPropagation(); // Impede o card de ser clicado junto
+                    e.stopPropagation();
                     setDeletingGardenId(garden.id);
                   }} 
                   title="Deletar"
@@ -124,6 +132,8 @@ const RegisteredGardens = () => {
           ))}
         </div>
       )}
+
+      {/* --- RENDERIZAÇÃO DOS MODAIS --- */}
 
       {deletingGardenId && (
         <DeleteGardenModal
@@ -140,6 +150,13 @@ const RegisteredGardens = () => {
           onUpdate={handleUpdateGarden}
         />
       )}
+      
+      {/* 5. Renderizar o novo modal */}
+      <AddGardenModal 
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSave={handleAddSave}
+      />
     </div>
   );
 };

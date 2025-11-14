@@ -9,7 +9,6 @@ import Layout from "./components/Layout/Layout"; // Seu componente de Layout
 // Importe suas páginas
 import Home from "./pages/Home/Home";
 import AskAI from "./pages/AskAI/AskAI";
-import GerenciarHorta from "./pages/GerenciarHorta/ManageGarden";
 import HortasCadastradas from "./pages/HortasCadastradas/RegisteredGardens";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import SupplyStock from "./pages/SupplyStock/SupplyStock";
@@ -32,7 +31,6 @@ function App() {
 
         <Route element={<AppLayout />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/gerenciar-horta" element={<GerenciarHorta />} />
           <Route path="/hortas" element={<HortasCadastradas />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/supply-stock" element={<SupplyStock />} />
