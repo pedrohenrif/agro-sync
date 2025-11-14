@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import api from '../../service/api';
 import { toast } from 'react-toastify';
-import { Pencil, Trash2, BookOpen } from 'lucide-react';
+import { Trash2 } from 'lucide-react'; // Importa SÓ o ícone de deletar
 
 import "./RegisteredGardens.css";
-import EditGardenModal from "./EditGardenModal";
+// Remove as importações dos modais individuais
+// import EditGardenModal from "./EditGardenModal";
+// import FieldJournalModal from "./FieldJournalModal"; 
 import DeleteGardenModal from "./DeleteGardenModal";
-import FieldJournalModal from "./FieldJournalModal";
+import GardenDetailModal from "./GardenDetailModal"; // Importa o novo "Super Modal"
 
 import { Garden } from "./types";
 
@@ -17,9 +19,9 @@ const RegisteredGardens = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [editingGarden, setEditingGarden] = useState<Garden | null>(null);
+  // Estados de controle dos modais
   const [deletingGardenId, setDeletingGardenId] = useState<number | null>(null);
-  const [journalGarden, setJournalGarden] = useState<Garden | null>(null);
+  const [viewingGarden, setViewingGarden] = useState<Garden | null>(null); // Estado para o novo modal
 
   useEffect(() => {
     fetchGardens();
@@ -40,14 +42,13 @@ const RegisteredGardens = () => {
     }
   };
 
-  const handleEditSave = (updatedGarden: Garden) => {
+  // Esta função é passada para o GardenDetailModal
+  const handleUpdateGarden = (updatedGarden: Garden) => {
     setGardens(prevGardens =>
       prevGardens.map(garden =>
         garden.id === updatedGarden.id ? updatedGarden : garden
       )
     );
-    setEditingGarden(null);
-    toast.success("Canteiro atualizado com sucesso!");
   };
 
   const handleDeleteConfirm = async () => {
@@ -66,10 +67,8 @@ const RegisteredGardens = () => {
     }
   };
 
-  const handleJournalSave = () => {
-    setJournalGarden(null);
-    toast.success("Entrada do diário salva!");
-  };
+  // Esta função não é mais necessária aqui
+  // const handleJournalSave = () => { ... };
 
   if (isLoading) {
     return <div className="gardens-container loading">Carregando canteiros...</div>;
@@ -85,7 +84,6 @@ const RegisteredGardens = () => {
       <div className="gardens-header">
         <h2><span role="img" aria-label="seedling">🌿</span> Canteiros Cadastrados</h2>
         <div className="garden-page-actions">
-          {/* Espaço reservado para futuras ações, como filtros */}
         </div>
       </div>
 
@@ -94,7 +92,11 @@ const RegisteredGardens = () => {
       ) : (
         <div className="gardens-grid">
           {gardens.map((garden) => (
-            <div key={garden.id} className="garden-card">
+            <div 
+              key={garden.id} 
+              className="garden-card clickable" // Card clicável
+              onClick={() => setViewingGarden(garden)} // Abre o super-modal
+            >
               <div className="card-content">
                 <h3>{garden.name}</h3>
                 <p className="category-tag">{garden.crop}</p>
@@ -104,27 +106,15 @@ const RegisteredGardens = () => {
                   {garden.location && <p><strong>Localização:</strong> {garden.location}</p>}
                 </div>
               </div>
+              
               <div className="card-actions">
-                <button
-                  type="button"
-                  className="action-button edit"
-                  onClick={() => setEditingGarden(garden)}
-                  title="Editar"
-                >
-                  <Pencil size={16} />
-                </button>
-                <button
-                  type="button"
-                  className="action-button journal"
-                  onClick={() => setJournalGarden(garden)}
-                  title="Diário de Campo"
-                >
-                  <BookOpen size={16} />
-                </button>
-                <button
-                  type="button"
-                  className="action-button delete"
-                  onClick={() => setDeletingGardenId(garden.id)}
+                <button 
+                  type="button" 
+                  className="action-button delete" 
+                  onClick={(e) => {
+                    e.stopPropagation(); // Impede o card de ser clicado junto
+                    setDeletingGardenId(garden.id);
+                  }} 
                   title="Deletar"
                 >
                   <Trash2 size={16} />
@@ -135,28 +125,19 @@ const RegisteredGardens = () => {
         </div>
       )}
 
-      {editingGarden && (
-        <EditGardenModal
-          garden={editingGarden}
-          onClose={() => setEditingGarden(null)}
-          onSave={handleEditSave}
-        />
-      )}
-
       {deletingGardenId && (
         <DeleteGardenModal
-          // Encontra o nome do canteiro a ser deletado
           gardenName={gardens.find(g => g.id === deletingGardenId)?.name || 'este canteiro'}
           onClose={() => setDeletingGardenId(null)}
           onConfirm={handleDeleteConfirm}
         />
       )}
 
-      {journalGarden && (
-        <FieldJournalModal
-          garden={journalGarden}
-          onClose={() => setJournalGarden(null)}
-          onSave={handleJournalSave}
+      {viewingGarden && (
+        <GardenDetailModal
+          garden={viewingGarden}
+          onClose={() => setViewingGarden(null)}
+          onUpdate={handleUpdateGarden}
         />
       )}
     </div>

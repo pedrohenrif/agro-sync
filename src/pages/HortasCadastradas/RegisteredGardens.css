@@ -172,3 +172,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* --- ADIÇÕES FINAIS PARA O CARD CLICÁVEL --- */
+.garden-card.clickable {
+  cursor: pointer;
+}
+
+.garden-card.clickable .action-button {
+  cursor: pointer;
+}
