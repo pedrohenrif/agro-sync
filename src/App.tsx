@@ -15,6 +15,7 @@ import SupplyStock from "./pages/SupplyStock/SupplyStock";
 import Login from "./components/Login/Login";
 import TaskManager from "./pages/TaskManager/TaskManager";
 import SeasonalCalendar from "./pages/SeasonalCalendar/SeasonalCalendar";
+import CropPlans from "./pages/CropPlans/CropPlans";
 import SearchResults from "./pages/SearchResults/SearchResults";
 
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="/hortas" element={<HortasCadastradas />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/supply-stock" element={<SupplyStock />} />
+          <Route path="/crop-plans" element={<CropPlans />} />
           <Route path="/tasks" element={<TaskManager />} />
           <Route path="/calendar" element={<SeasonalCalendar />} />
           <Route path="/search-results" element={<SearchResults />} />

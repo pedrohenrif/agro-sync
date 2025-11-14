@@ -1,0 +1,97 @@
+/* ARQUIVO: src/pages/CropPlans/PlanCard.css */
+
+.plan-card {
+  background: var(--card-background, #ffffff);
+  border-radius: var(--border-radius-card, 12px);
+  box-shadow: var(--card-shadow, 0px 3px 8px rgba(0,0,0,0.05));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.plan-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-hover-shadow, 0px 5px 15px rgba(0,0,0,0.1));
+}
+
+.plan-card .card-content {
+  padding: 1rem 1.25rem;
+  flex-grow: 1;
+}
+
+.plan-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.15rem;
+  color: var(--text-color, #333);
+}
+
+/* Reutilizando a classe de tag */
+.plan-card .category-tag {
+  display: inline-block;
+  background-color: var(--primary-light, #e8f5e9);
+  color: var(--primary-color, #2e7d32);
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.plan-description {
+  font-size: 0.9rem;
+  color: var(--text-muted, #666);
+  margin: 0 0 1rem 0;
+  line-height: 1.4;
+  height: 40px; /* Limita a altura (opcional) */
+  overflow: hidden;
+}
+
+.plan-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color, #e0e0e0);
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted, #666);
+}
+.summary-item svg {
+  color: var(--primary-color, #2e7d32);
+}
+
+.plan-card .card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  background-color: #fdfdfd;
+}
+
+/* Reutilizando classes de botões */
+.plan-card .action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  color: var(--text-muted, #666);
+}
+
+.plan-card .action-button.edit { color: var(--edit-color, #ffa000); }
+.plan-card .action-button.edit:hover { background-color: var(--edit-hover-bg, rgba(255,160,0,0.1)); }
+
+.plan-card .action-button.delete { color: var(--delete-color, #e63946); }
+.plan-card .action-button.delete:hover { background-color: var(--delete-hover-bg, rgba(230,57,70,0.1)); }

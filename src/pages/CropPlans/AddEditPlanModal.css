@@ -1,0 +1,237 @@
+/* ARQUIVO: src/pages/CropPlans/AddEditPlanModal.css */
+
+.cpm-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.cpm-modal {
+  background: var(--card-background, white);
+  border-radius: var(--border-radius-card, 12px);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.25);
+  width: 95vw;
+  height: 90vh;
+  max-width: 100%;
+  max-height: 100%;
+  z-index: 1001;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.4s ease-out;
+}
+
+@media (min-width: 1024px) {
+  .cpm-backdrop { padding: 2rem; }
+  .cpm-modal {
+    width: 100%;
+    height: 800px;
+    max-width: 1000px; /* Um pouco menor que o de detalhes */
+    max-height: 800px;
+  }
+}
+
+.cpm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  flex-shrink: 0;
+}
+.cpm-header-title h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--primary-color, #2e7d32);
+}
+.cpm-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  color: var(--text-muted, #666);
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+.cpm-close-btn:hover {
+  color: var(--text-color, #333);
+  transform: rotate(90deg);
+}
+
+.cpm-tab-nav {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  flex-shrink: 0;
+  background-color: var(--main-bg, #f7fef9);
+  overflow-x: auto;
+}
+.cpm-tab-button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-muted, #666);
+  border-radius: 6px;
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+.cpm-tab-button:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+  color: var(--text-color, #333);
+}
+.cpm-tab-button.active {
+  color: var(--primary-color, #2e7d32);
+  font-weight: 600;
+  border-bottom-color: var(--primary-color, #2e7d32);
+}
+
+.cpm-tab-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 1.5rem 2rem;
+  background-color: var(--card-background, white);
+}
+.tab-content-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+.tab-content-container h3,
+.tab-content-container h4 {
+  font-size: 1.3rem;
+  color: var(--primary-color, #2e7d32);
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+.tab-content-container h4 {
+  font-size: 1.1rem;
+  margin-top: 2rem;
+}
+.tab-divider {
+  border: 0;
+  border-top: 1px dashed var(--border-color, #e0e0e0);
+  margin: 2rem 0;
+}
+
+/* --- Estilos de Formulário Reutilizados --- */
+.modal-form-reused {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.form-group {
+  margin-bottom: 0;
+}
+.modal-form-reused label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  color: var(--text-color, #333);
+  font-size: 0.9rem;
+}
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: var(--border-radius-button, 8px);
+  font-size: 1rem;
+  font-family: var(--font-family, sans-serif);
+  box-sizing: border-box;
+}
+.form-textarea { resize: vertical; min-height: 80px; }
+
+/* --- Sub-formulários (Insumos/Tarefas) --- */
+.sub-form {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+.sub-form.vertical {
+  flex-direction: column;
+  align-items: stretch;
+}
+.sub-form .form-input, .sub-form .form-select {
+  flex-grow: 1; /* Ocupa espaço */
+}
+.modal-button.small {
+  padding: 0.8rem; /* Alinha com altura dos inputs */
+  align-self: flex-end; /* Alinha o botão */
+}
+.sub-form.vertical .modal-button.small {
+  align-self: flex-start; /* Alinha à esquerda no form vertical */
+}
+
+/* --- Lista de Itens do Plano --- */
+.plan-item-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: var(--border-radius-button, 8px);
+}
+.plan-item-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+}
+.plan-item-list li:last-child {
+  border-bottom: none;
+}
+.plan-item-list button {
+  background: none;
+  border: none;
+  color: var(--danger-color, #f44336);
+  cursor: pointer;
+  padding: 0.2rem;
+  border-radius: 50%;
+}
+.plan-item-list button:hover {
+  background-color: var(--delete-hover-bg, rgba(230,57,70,0.1));
+}
+
+
+/* --- Rodapé do Modal (Botões principais) --- */
+.cpm-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color, #e0e0e0);
+  background-color: #fdfdfd;
+  flex-shrink: 0;
+}
+.modal-button {
+  padding: 0.7rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  border-radius: var(--border-radius-button, 8px);
+  color: white;
+}
+.modal-button.submit { background-color: var(--primary-color, #2e7d32); }
+.modal-button.submit:hover { background-color: var(--primary-hover, #1b5e20); }
+.modal-button.cancel { background-color: var(--danger-color, #f44336); }
+.modal-button.cancel:hover { background-color: var(--danger-hover, #d32f2f); }
+.modal-button:disabled { background-color: #ccc; cursor: not-allowed; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
