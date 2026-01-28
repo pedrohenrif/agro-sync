@@ -1,0 +1,113 @@
+/* Escopo isolado para a aba de Diário */
+
+.gdm-journal-wrapper .journal-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.25rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.gdm-journal-wrapper .header-icon-box {
+  background: #10b981;
+  color: white;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gdm-journal-wrapper .header-text h3 { margin: 0; color: #1e293b; font-size: 1.15rem; }
+.gdm-journal-wrapper .header-text p { margin: 2px 0 0 0; color: #64748b; font-size: 0.85rem; }
+
+.gdm-journal-wrapper .modal-form-reused {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.gdm-journal-wrapper .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.gdm-journal-wrapper .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.gdm-journal-wrapper .form-group label {
+  font-weight: 700;
+  color: #475569;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.gdm-journal-wrapper .form-input,
+.gdm-journal-wrapper .form-select,
+.gdm-journal-wrapper .form-textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.gdm-journal-wrapper .form-input:focus,
+.gdm-journal-wrapper .form-select:focus,
+.gdm-journal-wrapper .form-textarea:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.gdm-journal-wrapper .form-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+.gdm-journal-wrapper .journal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.gdm-journal-wrapper .btn-save-journal {
+  background-color: #10b981;
+  color: white;
+  padding: 0.8rem 2rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.gdm-journal-wrapper .btn-save-journal:hover:not(:disabled) {
+  background-color: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+}
+
+.gdm-journal-wrapper .btn-save-journal:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}

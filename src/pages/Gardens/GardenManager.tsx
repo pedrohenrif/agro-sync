@@ -1,25 +1,22 @@
 import React, { useEffect, useState } from "react";
-import api from '../../service/api';
 import { toast } from 'react-toastify';
-import { Trash2, PlusCircle } from 'lucide-react'; // Trocamos ícones
+import { Trash2, PlusCircle, Sprout } from 'lucide-react'; 
 import { Garden } from "./types";
+import * as gardenService from '../../service/gardenService';
 
-import "./RegisteredGardens.css";
+import "./GardenManager.css";
 import DeleteGardenModal from "./DeleteGardenModal";
-import GardenDetailModal from "./GardenDetailModal";
-import AddGardenModal from "./AddGardenModal"; // <-- 1. Importar o novo modal
+import GardenDetailModal from "./components/GardenDetailModal";
+import AddGardenModal from "./AddGardenModal";
 
-const FAKE_USER_ID = 1;
-
-const RegisteredGardens = () => {
+const GardenManager = () => {
   const [gardens, setGardens] = useState<Garden[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const [deletingGardenId, setDeletingGardenId] = useState<number | null>(null);
   const [viewingGarden, setViewingGarden] = useState<Garden | null>(null);
-  
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false); // <-- 2. Novo estado
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
 
   useEffect(() => {
     fetchGardens();
@@ -27,68 +24,50 @@ const RegisteredGardens = () => {
 
   const fetchGardens = async () => {
     setIsLoading(true);
-    setError(null);
     try {
-      const response = await api.get(`/manager-garden/get-gardens?userId=${FAKE_USER_ID}`);
-      setGardens(response.data);
+      const data = await gardenService.getGardens();
+      setGardens(data);
     } catch (err) {
-      console.error("Falha ao buscar canteiros:", err);
-      setError("Não foi possível carregar os canteiros. Tente novamente mais tarde.");
-      toast.error("Erro ao carregar canteiros!");
+      setError("Não foi possível carregar os canteiros.");
+      toast.error("Erro ao buscar canteiros!");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleUpdateGarden = (updatedGarden: Garden) => {
-    setGardens(prevGardens =>
-      prevGardens.map(garden =>
-        garden.id === updatedGarden.id ? updatedGarden : garden
-      )
-    );
+    setGardens(prev => prev.map(g => g.id === updatedGarden.id ? updatedGarden : g));
   };
   
-  // 3. Nova função de callback para o modal de adicionar
   const handleAddSave = (newGarden: Garden) => {
-    setGardens(prevGardens => [...prevGardens, newGarden]); // Adiciona o novo canteiro à lista
-    setIsAddModalOpen(false); // Fecha o modal
+    setGardens(prev => [newGarden, ...prev]);
+    setIsAddModalOpen(false);
+    toast.success("Canteiro criado com sucesso!");
   };
 
   const handleDeleteConfirm = async () => {
     if (!deletingGardenId) return;
     try {
-      await api.delete(`/manager-garden/delete-garden/${deletingGardenId}`);
-      setGardens(prevGardens =>
-        prevGardens.filter(garden => garden.id !== deletingGardenId)
-      );
+      await gardenService.deleteGarden(deletingGardenId);
+      setGardens(prev => prev.filter(g => g.id !== deletingGardenId));
       setDeletingGardenId(null);
-      toast.success("Canteiro deletado com sucesso!");
+      toast.success("Canteiro excluído com sucesso!");
     } catch (error) {
-      console.error("Erro ao deletar canteiro:", error);
-      toast.error("Falha ao deletar o canteiro.");
+      toast.error("Falha ao excluir o canteiro.");
     }
   };
 
-  if (isLoading) {
-    return <div className="gardens-container loading">Carregando canteiros...</div>;
-  }
-
-  if (error) {
-    return <div className="gardens-container error">{error}</div>;
-  }
+  if (isLoading) return <div className="gardens-container loading">Carregando canteiros...</div>;
 
   return (
     <div className="gardens-container">
-      
       <div className="gardens-header">
-        <h2><span role="img" aria-label="seedling">🌿</span> Canteiros Cadastrados</h2>
+        <h2><Sprout size={28} color="#2e7d32" /> Canteiros Cadastrados</h2>
         <div className="garden-page-actions">
-          {/* 4. Adicionar o novo botão */}
           <button
             type="button"
             className="new-item-button"
             onClick={() => setIsAddModalOpen(true)}
-            disabled={isLoading}
           >
             <PlusCircle size={18} />
             Novo Canteiro
@@ -110,7 +89,7 @@ const RegisteredGardens = () => {
                 <h3>{garden.name}</h3>
                 <p className="category-tag">{garden.crop}</p>
                 <div className="card-details">
-                  <p><strong>Plantação:</strong> {new Date(garden.plantingDate).toLocaleDateString()}</p>
+                  <p><strong>Plantado em:</strong> {new Date(garden.plantingDate).toLocaleDateString()}</p>
                   <p><strong>Tamanho:</strong> {garden.sizeInM2}m²</p>
                   {garden.location && <p><strong>Localização:</strong> {garden.location}</p>}
                 </div>
@@ -123,7 +102,6 @@ const RegisteredGardens = () => {
                     e.stopPropagation();
                     setDeletingGardenId(garden.id);
                   }} 
-                  title="Deletar"
                 >
                   <Trash2 size={16} />
                 </button>
@@ -133,8 +111,7 @@ const RegisteredGardens = () => {
         </div>
       )}
 
-      {/* --- RENDERIZAÇÃO DOS MODAIS --- */}
-
+      {/* MODALS */}
       {deletingGardenId && (
         <DeleteGardenModal
           gardenName={gardens.find(g => g.id === deletingGardenId)?.name || 'este canteiro'}
@@ -151,7 +128,6 @@ const RegisteredGardens = () => {
         />
       )}
       
-      {/* 5. Renderizar o novo modal */}
       <AddGardenModal 
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
@@ -161,4 +137,4 @@ const RegisteredGardens = () => {
   );
 };
 
-export default RegisteredGardens;
+export default GardenManager;

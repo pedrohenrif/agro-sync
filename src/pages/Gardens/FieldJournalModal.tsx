@@ -1,14 +1,13 @@
-// ARQUIVO: src/pages/HortasCadastradas/FieldJournalModal.tsx
-
 import React, { useState } from "react";
-import api from '../../service/api';
 import { toast } from 'react-toastify';
-import { X } from 'lucide-react'; // Importando o ícone de Fechar
+import { X, BookText } from 'lucide-react'; 
 import { Garden } from "./types";
+import * as gardenService from '../../service/gardenService';
 
 import './FieldJournalModal.css'; 
 
-type EntryType = "Observação" | "Aplicação" | "Praga" | "Colheita";
+// Tipagem interna permanece em inglês para padronização do código
+type EntryType = "Observation" | "Application" | "Pest" | "Harvest";
 
 interface FieldJournalModalProps {
   garden: Garden;
@@ -19,7 +18,7 @@ interface FieldJournalModalProps {
 const FieldJournalModal: React.FC<FieldJournalModalProps> = ({ garden, onClose, onSave }) => {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [entryType, setEntryType] = useState<EntryType>("Observação");
+  const [entryType, setEntryType] = useState<EntryType>("Observation");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,15 +35,14 @@ const FieldJournalModal: React.FC<FieldJournalModalProps> = ({ garden, onClose, 
     };
 
     try {
-      await api.post('/manager-garden/add-journal-entry', newEntry);
-
-      toast.success("Entrada do diário salva com sucesso!"); 
-      setIsLoading(false);
+      await gardenService.addJournalEntry(newEntry);
+      toast.success("Entrada no diário salva com sucesso!"); 
       onSave?.();
       onClose();
     } catch (error) {
-      console.error("Erro ao salvar entrada do diário:", error);
+      console.error("Error saving journal entry:", error);
       toast.error("Falha ao salvar a entrada. Tente novamente.");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -56,9 +54,9 @@ const FieldJournalModal: React.FC<FieldJournalModalProps> = ({ garden, onClose, 
           
           <div className="modal-header">
             <h2 className="modal-title">
-              <span role="img" aria-label="notebook">📓</span> Novo Diário de Campo: {garden.name}
+              <BookText size={24} color="#2e7d32" style={{ marginRight: '8px' }} /> 
+              Diário de Campo: {garden.name}
             </h2>
-            {/* Adicionando o botão de fechar (X) que faltava */}
             <button type="button" className="modal-close-button" onClick={onClose} disabled={isLoading}>
               <X size={24} />
             </button>
@@ -69,6 +67,7 @@ const FieldJournalModal: React.FC<FieldJournalModalProps> = ({ garden, onClose, 
             <input
               id="journal-title"
               type="text"
+              placeholder="Ex: Primeiros brotos visíveis"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
@@ -99,15 +98,15 @@ const FieldJournalModal: React.FC<FieldJournalModalProps> = ({ garden, onClose, 
               disabled={isLoading}
               className="form-select"
             >
-              <option value="Observação">Observação</option>
-              <option value="Aplicação">Aplicação (Fertilizante, Água)</option>
-              <option value="Praga">Praga / Doença</option>
-              <option value="Colheita">Colheita</option>
+              <option value="Observation">Observação</option>
+              <option value="Application">Aplicação (Fertilizante, Água)</option>
+              <option value="Pest">Praga / Doença</option>
+              <option value="Harvest">Colheita</option>
             </select>
           </div>
 
           <div className="form-group">
-            <label htmlFor="journal-description">História (Descrição):</label>
+            <label htmlFor="journal-description">Notas (Descrição):</label>
             <textarea
               id="journal-description"
               rows={5}

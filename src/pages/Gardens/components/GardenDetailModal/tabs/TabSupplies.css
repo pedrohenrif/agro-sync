@@ -1,0 +1,169 @@
+/* Todas as regras agora dependem do pai .gdm-supplies-wrapper */
+
+.gdm-supplies-wrapper.tab-supplies-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.gdm-supplies-wrapper .usage-registration-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.gdm-supplies-wrapper .card-header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+  align-items: center;
+}
+
+.gdm-supplies-wrapper .title-icon {
+  background: #f0fdf4;
+  color: #16a34a;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.gdm-supplies-wrapper .title-text h4 { margin: 0; color: #1e293b; font-size: 1.1rem; }
+.gdm-supplies-wrapper .title-text p { margin: 0; color: #64748b; font-size: 0.85rem; }
+
+.gdm-supplies-wrapper .horizontal-usage-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.gdm-supplies-wrapper .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.gdm-supplies-wrapper .input-group.main { flex: 3; }
+.gdm-supplies-wrapper .input-group.qty { flex: 1; }
+
+.gdm-supplies-wrapper .input-group label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gdm-supplies-wrapper .input-group select, 
+.gdm-supplies-wrapper .input-group input {
+  padding: 0.75rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #1e293b;
+  transition: border-color 0.2s;
+}
+
+.gdm-supplies-wrapper .input-group select:focus, 
+.gdm-supplies-wrapper .input-group input:focus {
+  outline: none;
+  border-color: #10b981;
+}
+
+.gdm-supplies-wrapper .btn-apply-supply {
+  background: #10b981;
+  color: white;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.gdm-supplies-wrapper .btn-apply-supply:hover {
+  background: #059669;
+  transform: scale(1.05);
+}
+
+.gdm-supplies-wrapper .section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #475569;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #f1f5f9;
+  padding-bottom: 0.5rem;
+}
+
+.gdm-supplies-wrapper .history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.gdm-supplies-wrapper .history-item-card {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.gdm-supplies-wrapper .history-item-card:hover {
+  background: #fff;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.gdm-supplies-wrapper .date-badge {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  min-width: 55px;
+  padding: 8px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gdm-supplies-wrapper .date-badge .day { font-size: 1.2rem; font-weight: 800; color: #1e293b; line-height: 1; }
+.gdm-supplies-wrapper .date-badge .month { font-size: 0.65rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+
+.gdm-supplies-wrapper .item-details { flex: 1; }
+
+.gdm-supplies-wrapper .item-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gdm-supplies-wrapper .supply-name { font-weight: 700; color: #1e293b; font-size: 0.95rem; }
+.gdm-supplies-wrapper .usage-qty { font-weight: 700; color: #dc2626; background: #fee2e2; padding: 2px 8px; border-radius: 6px; font-size: 0.85rem; }
+
+.gdm-supplies-wrapper .item-notes { margin: 4px 0 0 0; font-size: 0.85rem; color: #64748b; font-style: italic; }
+
+.gdm-supplies-wrapper .empty-history {
+  text-align: center;
+  padding: 3rem;
+  color: #94a3b8;
+}
+
+@media (max-width: 640px) {
+  .gdm-supplies-wrapper .horizontal-usage-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .gdm-supplies-wrapper .btn-apply-supply {
+    width: 100%;
+  }
+}

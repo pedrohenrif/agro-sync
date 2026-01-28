@@ -1,138 +1,138 @@
-import React, { useState, useMemo } from 'react';
-import { PlusCircle, Loader, Edit2, Trash2 } from 'lucide-react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { PlusCircle, ClipboardList } from 'lucide-react';
 import { Task, TaskStatus } from './types';
 import TaskCard from './TaskCard';
 import AddTaskModal from './AddTaskModal';
+import EditTaskModal from './EditTaskModal';
 import { toast } from 'react-toastify';
+import * as taskService from '../../service/taskService';
 
 import './TaskManager.css';
-import 'uuid'; 
-import { v4 as uuidv4 } from 'uuid'; 
-
-// --- DADOS MOCK (SIMULADOS) ---
-// No futuro, isso virá de uma chamada API no useEffect
-const MOCK_TASKS: Task[] = [
-  { id: uuidv4(), title: 'Regar Canteiro 1', status: 'pending', priority: 'medium', gardenName: 'Canteiro 1' },
-  { id: uuidv4(), title: 'Verificar pragas', status: 'pending', priority: 'high', dueDate: '2025-11-15' },
-  { id: uuidv4(), title: 'Adubar Horta de Ervas', status: 'in_progress', priority: 'medium', gardenName: 'Horta de Ervas' },
-  { id: uuidv4(), title: 'Comprar fertilizante NPK', status: 'done', priority: 'low' },
-];
 
 const TaskManager: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>(MOCK_TASKS);
-  const [isLoading, setIsLoading] = useState(false); // No futuro, useEffect controlará isso
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTask, setEditingTask] = useState<Task | null>(null); // Para edição futura
-  const [deletingTask, setDeletingTask] = useState<Task | null>(null); // Para deleção futura
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null); // Controla a edição
 
-  // Função para adicionar a nova tarefa (do modal) à lista
-  const handleAddTask = (taskData: Omit<Task, 'id'>) => {
-    // No frontend, nós criamos um ID (no futuro, o backend faria isso)
-    const newTask: Task = {
-      ...taskData,
-      id: uuidv4(), // Gera um ID único
-    };
-    setTasks(prevTasks => [...prevTasks, newTask]);
-    // setIsModalOpen(false); // O modal já se fecha
-  };
-  
-  // (Funções placeholder para os botões dos cards)
-  const handleEdit = (task: Task) => {
-    // setEditingTask(task);
-    // setIsModalOpen(true); // Reutilizaria o modal para edição
-    toast.info("Função 'Editar' ainda não implementada.");
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = async () => {
+    setIsLoading(true);
+    try {
+      const data = await taskService.getTasks();
+      setTasks(data);
+    } catch (err) {
+      toast.error("Erro ao carregar tarefas!");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDelete = (task: Task) => {
-    // setDeletingTask(task);
-    // setIsDeleteModalOpen(true);
-    toast.info("Função 'Excluir' ainda não implementada.");
+  const handleUpdateStatus = async (id: number, newStatus: TaskStatus) => {
+    try {
+      await taskService.updateTaskStatus(id, newStatus);
+      setTasks(prev => prev.map(t => t.id === id ? { ...t, status: newStatus } : t));
+    } catch (err) {
+      toast.error("Erro ao atualizar status.");
+    }
   };
 
-  // Filtra as tarefas em colunas usando useMemo para otimização
+  const handleDelete = async (id: number) => {
+    try {
+      await taskService.deleteTask(id);
+      setTasks(prev => prev.filter(t => t.id !== id));
+      toast.success("Tarefa excluída.");
+    } catch (err) {
+      toast.error("Erro ao excluir tarefa.");
+    }
+  };
+
   const filteredTasks = useMemo(() => {
     return {
-      pending: tasks.filter(t => t.status === 'pending'),
-      in_progress: tasks.filter(t => t.status === 'in_progress'),
-      done: tasks.filter(t => t.status === 'done'),
+      pending: tasks.filter(t => t.status === 'PENDING'),
+      in_progress: tasks.filter(t => t.status === 'IN_PROGRESS'),
+      done: tasks.filter(t => t.status === 'DONE'),
     };
   }, [tasks]);
 
   return (
     <div className="task-manager-container">
       <div className="task-manager-header">
-        <h2><span role="img" aria-label="tasks">📋</span> Gerenciador de Tarefas</h2>
-        <button
-          type="button"
-          className="new-task-button"
-          onClick={() => setIsModalOpen(true)}
-        >
-          <PlusCircle size={18} />
-          Nova Tarefa
+        <div className="header-title">
+          <ClipboardList size={28} color="#2e7d32" />
+          <h2>Gerenciador de Tarefas</h2>
+        </div>
+        <button className="new-task-button" onClick={() => setIsAddModalOpen(true)}>
+          <PlusCircle size={18} /> Nova Tarefa
         </button>
       </div>
 
       {isLoading ? (
-        <div className="loading-message">Carregando tarefas...</div>
+        <div className="loading-message">Sincronizando tarefas...</div>
       ) : (
         <div className="task-board-container">
           
           {/* Coluna A Fazer */}
           <div className="task-column">
-            <h3 className="column-title" id="pending-title">
+            <h3 className="column-title">
               <span className="status-dot pending"></span> A Fazer ({filteredTasks.pending.length})
             </h3>
-            <div className="task-list" aria-labelledby="pending-title">
-              {filteredTasks.pending.length === 0 ? (
-                <p className="empty-column-message">Nenhuma tarefa pendente.</p>
-              ) : (
-                filteredTasks.pending.map(task => (
-                  <TaskCard key={task.id} task={task} onEdit={handleEdit} onDelete={handleDelete} />
-                ))
-              )}
+            <div className="task-list">
+              {filteredTasks.pending.map(task => (
+                <div key={task.id} onClick={() => setSelectedTask(task)} className="clickable-card">
+                  <TaskCard task={task} onUpdateStatus={handleUpdateStatus} onDelete={handleDelete} />
+                </div>
+              ))}
             </div>
           </div>
           
           {/* Coluna Em Andamento */}
           <div className="task-column">
-            <h3 className="column-title" id="progress-title">
+            <h3 className="column-title">
               <span className="status-dot in_progress"></span> Em Andamento ({filteredTasks.in_progress.length})
             </h3>
-            <div className="task-list" aria-labelledby="progress-title">
-              {filteredTasks.in_progress.length === 0 ? (
-                <p className="empty-column-message">Nenhuma tarefa em andamento.</p>
-              ) : (
-                filteredTasks.in_progress.map(task => (
-                  <TaskCard key={task.id} task={task} onEdit={handleEdit} onDelete={handleDelete} />
-                ))
-              )}
+            <div className="task-list">
+              {filteredTasks.in_progress.map(task => (
+                <div key={task.id} onClick={() => setSelectedTask(task)} className="clickable-card">
+                  <TaskCard task={task} onUpdateStatus={handleUpdateStatus} onDelete={handleDelete} />
+                </div>
+              ))}
             </div>
           </div>
           
           {/* Coluna Concluído */}
           <div className="task-column">
-            <h3 className="column-title" id="done-title">
+            <h3 className="column-title">
               <span className="status-dot done"></span> Concluído ({filteredTasks.done.length})
             </h3>
-            <div className="task-list" aria-labelledby="done-title">
-              {filteredTasks.done.length === 0 ? (
-                <p className="empty-column-message">Nenhuma tarefa concluída.</p>
-              ) : (
-                filteredTasks.done.map(task => (
-                  <TaskCard key={task.id} task={task} onEdit={handleEdit} onDelete={handleDelete} />
-                ))
-              )}
+            <div className="task-list">
+              {filteredTasks.done.map(task => (
+                <div key={task.id} onClick={() => setSelectedTask(task)} className="clickable-card">
+                  <TaskCard task={task} onUpdateStatus={handleUpdateStatus} onDelete={handleDelete} />
+                </div>
+              ))}
             </div>
           </div>
-
         </div>
       )}
 
-      {/* Renderização do Modal */}
+      {/* Modal para Adicionar */}
       <AddTaskModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSave={handleAddTask}
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onSave={fetchTasks}
+      />
+
+    {/* Modal para Editar/Visualizar Detalhes */}
+      <EditTaskModal
+        task={selectedTask}
+        isOpen={!!selectedTask}
+        onClose={() => setSelectedTask(null)}
+        onUpdate={fetchTasks}
+        onDelete={handleDelete} // <--- ADICIONE ESTA LINHA AQUI
       />
     </div>
   );

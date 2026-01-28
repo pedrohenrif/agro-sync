@@ -1,0 +1,299 @@
+/* ARQUIVO: src/components/Layout/layout.css */
+
+/* --- Variáveis Globais do Layout --- */
+:root {
+  /* Cores */
+  --sidebar-bg: #2d6a4f; /* Verde escuro */
+  --sidebar-text: #ffffff;
+  --sidebar-link-hover-bg: #40916c; /* Verde mais claro */
+  --sidebar-link-active-bg: #52b788; /* Verde ainda mais claro para ativo */
+  --main-bg: #f7fef9; /* Fundo principal quase branco, levemente verde */
+  --header-bg: #ffffff;
+  --header-border: #e0e0e0;
+  --text-color-dark: #333;
+  --text-color-muted: #666;
+  --search-bg: var(--main-bg); /* Fundo da busca igual ao fundo principal */
+
+  /* Tamanhos */
+  --sidebar-width: 250px;
+  --header-height: 60px;
+
+  /* Fontes */
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+  /* Transições */
+  --transition-speed: 0.25s; /* Um pouco mais suave */
+}
+
+/* --- Estrutura Principal --- */
+.layout-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  font-family: var(--font-family);
+  position: relative; /* Para o overlay funcionar */
+}
+
+/* --- Barra Lateral (Sidebar) --- */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--sidebar-bg);
+  color: var(--sidebar-text);
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 100; /* Sidebar acima do overlay */
+  transition: transform var(--transition-speed) ease-out; /* Transição para mobile */
+  position: fixed; /* Fixa para deslizar */
+  left: 0;
+  top: 0;
+  height: 100%;
+}
+
+.sidebar-header {
+  margin-bottom: 2rem;
+  display: flex; /* Para alinhar logo e botão X */
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+/* Botão de Fechar (X) - Escondido por padrão */
+.sidebar-close-button {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--sidebar-text);
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-right: -0.5rem; /* Compensa o padding */
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex-grow: 1;
+}
+
+.nav-link {
+  color: var(--sidebar-text);
+  text-decoration: none;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: background-color var(--transition-speed) ease-out,
+              color var(--transition-speed) ease-out;
+}
+
+.nav-link:hover {
+  background: var(--sidebar-link-hover-bg);
+}
+
+.nav-link.active {
+  background: var(--sidebar-link-active-bg);
+  font-weight: 600;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+}
+
+/* --- Conteúdo Principal (Direita) --- */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--main-bg);
+  overflow: hidden;
+  margin-left: var(--sidebar-width); /* Empurra conteúdo no desktop */
+  transition: margin-left var(--transition-speed) ease-out; /* Anima margem */
+}
+
+/* --- Cabeçalho Superior --- */
+.main-header {
+  height: var(--header-height);
+  background: var(--header-bg);
+  padding: 0 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--header-border);
+  z-index: 5;
+  position: sticky; /* Opcional: Mantém o header fixo no topo ao rolar */
+  top: 0;
+}
+
+.header-left {
+  flex-grow: 1; /* Ocupa espaço disponível */
+  display: flex;
+  align-items: center;
+  padding-right: 1.5rem;
+}
+
+/* Botão Hamburger - Escondido por padrão */
+.hamburger-button {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-color-dark);
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-right: 0.75rem;
+}
+
+/* Barra de Busca */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--search-bg);
+  border-radius: var(--border-radius-button, 8px);
+  padding: 0.4rem 0.8rem;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid var(--header-border);
+  transition: box-shadow var(--transition-speed) ease;
+  margin-left: 1rem;
+
+}
+.search-container:focus-within { /* Efeito ao focar no input */
+  box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+  border-color: var(--primary-color);
+}
+
+.search-icon {
+  color: var(--text-color-muted);
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 0.9rem;
+  color: var(--text-color-dark);
+  width: 100%;
+}
+.search-input::placeholder {
+  color: var(--text-color-muted);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.header-icon {
+  color: var(--text-color-muted);
+  cursor: pointer;
+  transition: color var(--transition-speed) ease;
+}
+.header-icon:hover {
+  color: var(--text-color-dark);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-color-dark);
+  cursor: pointer;
+}
+
+/* --- Área de Conteúdo da Página --- */
+.page-content {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto; /* Scroll vertical */
+  overflow-x: hidden; /* Sem scroll horizontal */
+}
+
+/* --- Overlay (Mobile) - Escondido por padrão --- */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  cursor: pointer;
+  opacity: 0; /* Começa invisível */
+  transition: opacity var(--transition-speed) ease-out;
+}
+
+/* ============================================= */
+/* MEDIA QUERY PARA TELAS MENORES (Ex: < 992px) */
+/* ============================================= */
+@media (max-width: 992px) {
+
+  .sidebar {
+    transform: translateX(-100%); /* Esconde sidebar */
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .sidebar-close-button {
+    display: block; /* Mostra botão X */
+  }
+
+  .main-content {
+    margin-left: 0; /* Conteúdo ocupa tudo */
+  }
+
+  .hamburger-button {
+    display: block; /* Mostra botão Hamburger */
+  }
+
+  /* --- Estilos QUANDO a sidebar ESTÁ ABERTA --- */
+  .layout-container.sidebar-open .sidebar {
+    transform: translateX(0); /* Mostra sidebar */
+  }
+
+  .layout-container.sidebar-open .sidebar-overlay {
+    display: block; /* Mostra overlay */
+    opacity: 1; /* Torna visível */
+  }
+}
+
+/* Ajustes finos para telas muito pequenas */
+@media (max-width: 576px) {
+  .main-header {
+    padding: 0 1rem; /* Menos padding horizontal */
+  }
+  .header-right {
+    gap: 0.75rem; /* Menos espaço entre ícones */
+  }
+  .user-info span {
+    display: none; /* Esconde nome do usuário */
+  }
+  .search-container {
+      max-width: calc(100% - 50px); /* Ajusta busca para caber */
+  }
+  .page-content {
+    padding: 1rem;
+  }
+}
+
+/* --- Estilos de Scrollbar (Opcional, Webkit) --- */
+.page-content::-webkit-scrollbar { width: 8px; }
+.page-content::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+.page-content::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+.page-content::-webkit-scrollbar-thumb:hover { background: #aaa; }

@@ -1,3 +1,27 @@
+:root {
+  /* O novo Verde AgroSync (Emerald) */
+  --primary-color: #10b981; 
+  --primary-hover: #059669;
+  
+  /* Tons de Cinza Profissionais (Slate) */
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --bg-main: #f8fafc;
+  
+  /* Bordas e Divisores */
+  --border-color: #e2e8f0;
+  
+  /* Danger (Para botões de excluir/cancelar) */
+  --danger-color: #ef4444;
+  --danger-hover: #dc2626;
+
+  /* Outras variáveis que você já pode deixar prontas */
+  --white: #ffffff;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -11,3 +35,4 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+

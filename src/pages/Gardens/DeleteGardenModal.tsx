@@ -1,8 +1,5 @@
-// ARQUIVO: src/pages/HortasCadastradas/DeleteGardenModal.tsx
-
 import React, { useState } from "react";
 import { X, AlertTriangle } from 'lucide-react';
-import { toast } from 'react-toastify'; // Importado para feedback futuro
 
 import "./DeleteGardenModal.css";
 
@@ -20,7 +17,7 @@ const DeleteGardenModal: React.FC<DeleteGardenModalProps> = ({ gardenName, onClo
     try {
       await onConfirm(); 
     } catch (error) {
-      console.error("Erro no onConfirm:", error);
+      console.error("Error confirming deletion:", error);
     } finally {
       setIsLoading(false);
     }
@@ -32,7 +29,7 @@ const DeleteGardenModal: React.FC<DeleteGardenModalProps> = ({ gardenName, onClo
         
         <div className="modal-header">
           <h2 className="modal-title">
-            <AlertTriangle size={20} /> Confirmar Exclusão
+            <AlertTriangle size={20} color="#ef4444" /> Confirmar Exclusão
           </h2>
           <button type="button" className="modal-close-button" onClick={onClose} disabled={isLoading}>
             <X size={24} />
@@ -40,7 +37,7 @@ const DeleteGardenModal: React.FC<DeleteGardenModalProps> = ({ gardenName, onClo
         </div>
 
         <div className="modal-body">
-          <p>Você tem certeza que deseja excluir o canteiro <strong>{gardenName}</strong>?</p>
+          <p>Tem certeza que deseja excluir o canteiro <strong>{gardenName}</strong>?</p>
           <p className="warning-text">Esta ação não pode ser desfeita.</p>
         </div>
 
@@ -59,7 +56,7 @@ const DeleteGardenModal: React.FC<DeleteGardenModalProps> = ({ gardenName, onClo
             onClick={handleConfirmClick}
             disabled={isLoading}
           >
-            {isLoading ? "Excluindo..." : "Excluir"}
+            {isLoading ? "Excluindo..." : "Excluir Canteiro"}
           </button>
         </div>
 

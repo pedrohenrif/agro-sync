@@ -1,14 +1,15 @@
-// ARQUIVO: src/pages/TaskManager/types.ts
-
-export type TaskStatus = 'pending' | 'in_progress' | 'done';
-export type TaskPriority = 'low' | 'medium' | 'high';
+export type TaskStatus = 'PENDING' | 'IN_PROGRESS' | 'DONE';
+export type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH';
 
 export interface Task {
-  id: string; 
+  id: number;
   title: string;
-  description?: string;
+  description?: string; 
   status: TaskStatus;
   priority: TaskPriority;
-  dueDate?: string; 
-  gardenName?: string; 
+  dueDate?: string;
+  gardenId?: number; 
+  garden?: {        
+    name: string;
+  };
 }

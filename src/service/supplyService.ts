@@ -1,5 +1,3 @@
-// src/services/supplyService.ts
-import axios from 'axios';
 import api from '../service/api';
 
 export const createSupply = async (data: {
@@ -7,11 +5,10 @@ export const createSupply = async (data: {
   quantity: number;
   unitId: number;
   categoryId: number;
-  userId: number;
   isActive?: boolean;
 }) => {
   try {
-    const response = await api.post('/supply/add', data);
+    const response = await api.post('/supplies', data);
     return response.data;
   } catch (error) {
     console.error('Erro ao criar insumo:', error);
@@ -21,7 +18,7 @@ export const createSupply = async (data: {
 
 export const updateSupply = async (id: number, data: any) => {
   try {
-    const response = await api.put(`/supply/update/${id}`, data);
+    const response = await api.put(`/supplies/${id}`, data);
     return response.data;
   } catch (error) {
     console.error('Erro ao atualizar insumo:', error);
@@ -31,7 +28,7 @@ export const updateSupply = async (id: number, data: any) => {
 
 export const deleteSupply = async (id: number) => {
   try {
-    const response = await api.put(`/supply/delete/${id}`);
+    const response = await api.delete(`/supplies/${id}`);
     return response.data;
   } catch (error) {
     console.error('Erro ao excluir insumo:', error);
@@ -39,24 +36,32 @@ export const deleteSupply = async (id: number) => {
   }
 };
 
-export const getCategories = async () => {
+export const getSupplys = async () => {
   try {
-    const response = await api.get('/supply/get-categories');
+    const response = await api.get('/supplies');
     return response.data;
-
-  } catch (erro) {
-    console.log('Erro ao buscar categorias:', erro)
-    throw new Error('Erro ao buscar categorias')
+  } catch (error) {
+    console.error('Erro ao buscar lista de Insumos:', error);
+    throw new Error('Erro ao buscar Insumos');
   }
 };
 
-export const getSupplys = async () => {
-  try{
-    const response = await api.get('/supply/get-supplys');
+export const getCategories = async () => {
+  try {
+    const response = await api.get('/supplies/categories');
     return response.data;
+  } catch (erro) {
+    console.error('Erro ao buscar categorias:', erro);
+    throw new Error('Erro ao buscar categorias');
+  }
+};
 
-  } catch (error) {
-    console.log('Erro ao buscar lista de Insumos:', error)
-    throw new Error('Erro ao buscar Insumos')
+export const getUnits = async () => {
+  try {
+    const response = await api.get('/supplies/units');
+    return response.data;
+  } catch (erro) {
+    console.error('Erro ao buscar unidades:', erro);
+    throw new Error('Erro ao buscar unidades');
   }
 };

@@ -1,51 +1,65 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Save, MapPin } from 'lucide-react';
 import { toast } from 'react-toastify';
-import { Task, TaskPriority, TaskStatus } from './types';
+import { TaskPriority } from './types';
+import * as taskService from '../../service/taskService';
+import api from '../../service/api'; 
 
-import './AddTaskModal.css'; // Usará o CSS de modal padrão
+import './AddTaskModal.css';
 
 interface AddTaskModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (newTask: Omit<Task, 'id'>) => void; // Envia a tarefa (sem ID) para o pai
+  onSave: (newTask: any) => void;
 }
 
 const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, onSave }) => {
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState<TaskPriority>('medium');
-  const [status, setStatus] = useState<TaskStatus>('pending');
+  const [priority, setPriority] = useState<TaskPriority>('MEDIUM');
   const [dueDate, setDueDate] = useState('');
-  const [gardenName, setGardenName] = useState(''); // Simplificado
+  const [description, setDescription] = useState('');
+  const [gardenId, setGardenId] = useState(''); 
+  const [gardens, setGardens] = useState<any[]>([]); 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (isOpen) {
+      const fetchGardens = async () => {
+        try {
+          const response = await api.get('/gardens'); 
+          setGardens(response.data);
+        } catch (err) {
+          console.error("Erro ao carregar canteiros no modal de tarefas:", err);
+        }
+      };
+      fetchGardens();
+    }
+  }, [isOpen]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // No futuro, aqui você faria a chamada API
-    // Por agora, só passamos os dados para o componente pai
     try {
-      onSave({
+      const taskData = {
         title,
-        description,
         priority,
-        status,
-        dueDate,
-        gardenName
-      });
-      toast.success("Tarefa criada com sucesso!");
+        dueDate: dueDate || null,
+        description,
+        gardenId: gardenId ? Number(gardenId) : null 
+      };
+      
+      const createdTask = await taskService.createTask(taskData);
+      onSave(createdTask);
       onClose();
-      // Limpa o formulário
-      setTitle('');
+      
+      setTitle(''); 
+      setPriority('MEDIUM'); 
+      setDueDate(''); 
       setDescription('');
-      setPriority('medium');
-      setStatus('pending');
-      setDueDate('');
-      setGardenName('');
+      setGardenId('');
     } catch (error) {
-      toast.error("Erro ao criar tarefa.");
+      toast.error("Falha ao agendar tarefa.");
     } finally {
       setIsLoading(false);
     }
@@ -65,43 +79,59 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, onSave }) 
           </div>
 
           <div className="form-group">
-            <label htmlFor="task-title">Título da Tarefa:</label>
-            <input id="task-title" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required className="form-input" />
+            <label>O que precisa ser feito?</label>
+            <input 
+              type="text" 
+              value={title} 
+              onChange={(e) => setTitle(e.target.value)} 
+              required 
+              placeholder="Ex: Adubar canteiro de tomates" 
+              className="form-input"
+            />
           </div>
           
           <div className="form-group-row">
             <div className="form-group">
-              <label htmlFor="task-status">Status:</label>
-              <select id="task-status" value={status} onChange={(e) => setStatus(e.target.value as TaskStatus)} className="form-select">
-                <option value="pending">A Fazer</option>
-                <option value="in_progress">Em Andamento</option>
-                <option value="done">Concluído</option>
+              <label>Prioridade:</label>
+              <select value={priority} onChange={(e) => setPriority(e.target.value as TaskPriority)} className="form-select">
+                <option value="LOW">Rotina (Baixa)</option>
+                <option value="MEDIUM">Normal (Média)</option>
+                <option value="HIGH">Urgente (Alta)</option>
               </select>
             </div>
             <div className="form-group">
-              <label htmlFor="task-priority">Prioridade:</label>
-              <select id="task-priority" value={priority} onChange={(e) => setPriority(e.target.value as TaskPriority)} className="form-select">
-                <option value="low">Baixa</option>
-                <option value="medium">Média</option>
-                <option value="high">Alta</option>
-              </select>
+              <label>Data Limite:</label>
+              <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="form-input" />
             </div>
           </div>
 
-          <div className="form-group-row">
-            <div className="form-group">
-              <label htmlFor="task-garden">Canteiro (Opcional):</label>
-              <input id="task-garden" type="text" value={gardenName} onChange={(e) => setGardenName(e.target.value)} className="form-input" placeholder="Ex: Horta Principal" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="task-dueDate">Data Limite (Opcional):</label>
-              <input id="task-dueDate" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="form-input" />
-            </div>
+          <div className="form-group">
+            <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <MapPin size={14} /> Vincular a um Canteiro (Opcional):
+            </label>
+            <select 
+              value={gardenId} 
+              onChange={(e) => setGardenId(e.target.value)} 
+              className="form-select"
+            >
+              <option value="">Nenhum (Tarefa Geral da Fazenda)</option>
+              {gardens.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.name} {g.lotCode ? `[Lote: ${g.lotCode}]` : ''}
+                </option>
+              ))}
+            </select>
           </div>
           
           <div className="form-group">
-            <label htmlFor="task-description">Descrição (Opcional):</label>
-            <textarea id="task-description" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} className="form-textarea" />
+            <label>Notas Adicionais:</label>
+            <textarea 
+              rows={3} 
+              value={description} 
+              onChange={(e) => setDescription(e.target.value)} 
+              className="form-textarea" 
+              placeholder="Descreva detalhes ou instruções aqui..." 
+            />
           </div>
 
           <div className="modal-actions">
@@ -109,7 +139,7 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, onSave }) 
               Cancelar
             </button>
             <button type="submit" className="modal-button submit" disabled={isLoading}>
-              {isLoading ? "Criando..." : "Criar Tarefa"}
+              {isLoading ? "Salvando..." : "Agendar Tarefa"}
             </button>
           </div>
         </form>

@@ -1,56 +1,131 @@
 import React from 'react';
-import { Task } from './types';
-import { Calendar, Tag, MapPin, Edit2, Trash2 } from 'lucide-react';
-import { formatDate } from '../../utils/formatDate'; 
-
+import { Task, TaskStatus } from './types';
+import { 
+  Calendar, 
+  Tag, 
+  MapPin, 
+  Trash2, 
+  ArrowRight, 
+  ArrowLeft, 
+  CheckCircle2, 
+  Clock, 
+  PlayCircle 
+} from 'lucide-react';
 import './TaskCard.css';
 
 interface TaskCardProps {
   task: Task;
-  onEdit: (task: Task) => void;
-  onDelete: (task: Task) => void;
+  onUpdateStatus: (id: number, newStatus: TaskStatus) => void;
+  onDelete: (id: number) => void;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ task, onEdit, onDelete }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onUpdateStatus, onDelete }) => {
   
-  // Função helper para retornar a classe CSS da prioridade
-  const getPriorityClass = (priority: string) => {
+  // 🚨 Lógica para verificar se a tarefa está atrasada
+  // Só considera atrasada se tiver data, a data for menor que agora e não estiver concluída
+  const isOverdue = 
+    task.dueDate && 
+    new Date(task.dueDate) < new Date(new Date().setHours(0,0,0,0)) && 
+    task.status !== 'DONE';
+
+  const getPriorityInfo = (priority: string) => {
     switch (priority) {
-      case 'high': return 'priority-high';
-      case 'medium': return 'priority-medium';
-      case 'low': return 'priority-low';
-      default: return 'priority-low';
+      case 'HIGH': return { label: 'Alta', class: 'priority-high' };
+      case 'MEDIUM': return { label: 'Média', class: 'priority-medium' };
+      case 'LOW': return { label: 'Baixa', class: 'priority-low' };
+      default: return { label: 'Baixa', class: 'priority-low' };
     }
   };
 
+  const priority = getPriorityInfo(task.priority);
+
+  const getStatusIcon = () => {
+    switch (task.status) {
+      case 'DONE': return <CheckCircle2 size={20} color="#4CAF50" />;
+      case 'IN_PROGRESS': return <PlayCircle size={20} color="#2196F3" />;
+      default: return <Clock size={20} color="#666" />;
+    }
+  };
+
+  const handleAction = (e: React.MouseEvent, action: () => void) => {
+    e.stopPropagation();
+    action();
+  };
+
   return (
-    <div className="task-card">
+    <div className={`task-card status-${task.status.toLowerCase()}`}>
       <div className="task-card-header">
-        <span className={`task-priority-tag ${getPriorityClass(task.priority)}`}>
-          <Tag size={12} /> {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+        <span className={`task-priority-tag ${priority.class}`}>
+          <Tag size={12} /> {priority.label}
         </span>
         <div className="task-card-actions">
-          <button onClick={() => onEdit(task)} title="Editar Tarefa"><Edit2 size={15} /></button>
-          <button onClick={() => onDelete(task)} title="Excluir Tarefa"><Trash2 size={15} /></button>
+          <button 
+            onClick={(e) => handleAction(e, () => onDelete(task.id))} 
+            title="Excluir Tarefa" 
+            className="btn-delete"
+          >
+            <Trash2 size={15} />
+          </button>
         </div>
       </div>
 
-      <h3 className="task-card-title">{task.title}</h3>
-      
-      {task.description && (
-        <p className="task-card-description">{task.description}</p>
-      )}
-
-      <div className="task-card-footer">
-        {task.gardenName && (
-          <span className="task-card-info">
-            <MapPin size={14} /> {task.gardenName}
-          </span>
+      <div className="task-body">
+        <div className="task-title-wrapper">
+          {getStatusIcon()}
+          <h3 className="task-card-title">{task.title}</h3>
+        </div>
+        
+        {task.description && (
+          <p className="task-card-description">{task.description}</p>
         )}
-        {task.dueDate && (
-          <span className="task-card-info">
-            <Calendar size={14} /> {new Date(task.dueDate).toLocaleDateString()}
-          </span>
+
+        <div className="task-card-footer">
+          {/* 📅 DATA LIMITE COM ALERTA DE ATRASO */}
+          {task.dueDate && (
+            <span className={`task-card-info ${isOverdue ? 'overdue' : ''}`}>
+              <Calendar size={14} /> 
+              {new Date(task.dueDate).toLocaleDateString('pt-BR')}
+              {isOverdue && <span className="overdue-label">Atrasada</span>}
+            </span>
+          )}
+
+          {/* 🏡 CANTEIRO VINCULADO */}
+          {task.garden?.name && (
+            <span className="task-card-info garden-highlight">
+              <MapPin size={14} /> 
+              {task.garden.name}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* CONTROLES DE FLUXO */}
+      <div className="task-status-controls">
+        {task.status !== 'PENDING' && (
+          <button 
+            onClick={(e) => handleAction(e, () => onUpdateStatus(task.id, 'PENDING'))} 
+            title="Mover para Pendente"
+          >
+            <ArrowLeft size={16} /> Voltar
+          </button>
+        )}
+        
+        {task.status === 'PENDING' && (
+          <button 
+            className="btn-next" 
+            onClick={(e) => handleAction(e, () => onUpdateStatus(task.id, 'IN_PROGRESS'))}
+          >
+            Iniciar <ArrowRight size={16} />
+          </button>
+        )}
+
+        {task.status === 'IN_PROGRESS' && (
+          <button 
+            className="btn-next" 
+            onClick={(e) => handleAction(e, () => onUpdateStatus(task.id, 'DONE'))}
+          >
+            Concluir <ArrowRight size={16} />
+          </button>
         )}
       </div>
     </div>

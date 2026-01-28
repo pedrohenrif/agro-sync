@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom'; 
 import api from '../../service/api';
-import { Garden } from '../HortasCadastradas/types'; 
+import { Garden } from '../Gardens/types'; 
 // import { SupplyItem } from './SupplyStock/types'; // Importar quando buscar insumos
 
 import './SearchResults.css'; 
