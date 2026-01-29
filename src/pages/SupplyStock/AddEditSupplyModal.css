@@ -1,144 +1,179 @@
-/* ARQUIVO: src/pages/SupplyStock/AddEditSupplyModal.css */
-
-.add-edit-modal-backdrop {
+/* Overlay (Fundo escurecido e desfocado) */
+.gdm-modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.7);
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeInModal 0.3s ease-out;
 }
 
-.add-edit-modal-content {
-  background: white;
-  padding: 1.5rem 2rem;
-  border-radius: var(--border-radius-card, 12px);
-  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+/* Container do Modal */
+.gdm-modal-container {
+  background: #ffffff;
   width: 90%;
-  max-width: 450px;
-  z-index: 1001;
-  max-height: 90vh;
-  overflow-y: auto;
-  animation: slideUp 0.4s ease-out;
+  max-width: 550px;
+  border-radius: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  position: relative;
 }
 
-.add-edit-modal-form {
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-header {
+/* Header do Modal */
+.gdm-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
 }
 
-.modal-header h2 {
+.gdm-modal-header h3 {
   margin: 0;
-  font-size: 1.3rem;
-  color: var(--primary-color, #2e7d32);
+  font-size: 1.25rem;
+  color: #1e293b;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 10px;
 }
 
-.modal-close-button {
-  background: none;
+/* --- O BOTÃO DE FECHAR (X) --- */
+.close-btn {
+  background: #f1f5f9;
   border: none;
+  color: #64748b;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  padding: 0.25rem;
-  color: var(--text-muted, #666);
-  transition: color 0.2s ease;
-}
-.modal-close-button:hover {
-  color: var(--text-color, #333);
+  transition: all 0.2s ease;
 }
 
-.form-group {
-  margin-bottom: 1rem;
+.close-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  transform: rotate(90deg);
 }
 
-.add-edit-modal-form label {
+.close-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Corpo do Modal */
+.gdm-modal-body {
+  padding: 24px;
+}
+
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Grupos de Formulário */
+.gdm-form-group {
+  margin-bottom: 20px;
+}
+
+.gdm-form-group label {
   display: block;
+  font-size: 0.875rem;
   font-weight: 600;
-  margin-bottom: 0.4rem;
-  color: var(--text-color, #333);
-  font-size: 0.9rem;
+  color: #475569;
+  margin-bottom: 8px;
 }
 
-.form-input,
-.form-select {
+.gdm-form-group input, 
+.gdm-form-group select, 
+.gdm-form-group textarea {
   width: 100%;
-  padding: 0.8rem;
-  border: 1px solid var(--border-color, #ccc);
-  border-radius: var(--border-radius-input, 8px);
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  font-family: inherit;
   font-size: 1rem;
-  font-family: var(--font-family, sans-serif);
-  box-sizing: border-box;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s;
+  background: #f8fafc;
 }
 
-.form-input:focus,
-.form-select:focus {
+.gdm-form-group input:focus, 
+.gdm-form-group select:focus {
+  border-color: #10b981;
   outline: none;
-  border-color: var(--primary-color, #2e7d32);
-  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
 }
 
-.modal-actions {
+/* Dica de Erro ou Info */
+.input-tip {
+  font-size: 0.75rem;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.input-tip.error { color: #ef4444; font-weight: 500; }
+
+/* Rodapé do Modal */
+.gdm-modal-footer {
+  padding: 20px 24px;
+  background: #f8fafc;
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 1.5rem;
+  gap: 12px;
 }
 
-.modal-button {
-  padding: 0.7rem 1.2rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  border-radius: var(--border-radius-button, 8px);
-  transition: background-color 0.2s ease, transform 0.1s ease;
+/* Botões Estilizados */
+.btn-primary {
+  background: #10b981;
   color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: 0.2s;
 }
 
-.modal-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-}
-.modal-button:active:not(:disabled) {
-  transform: translateY(0px);
+.btn-primary:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-1px);
 }
 
-/* --- CORREÇÃO DE COR AQUI --- */
-.modal-button.submit {
-  background-color: var(--primary-color, #2e7d32); /* VERDE PADRÃO */
-}
-.modal-button.submit:hover:not(:disabled) {
-  background-color: var(--primary-hover, #1b5e20); /* VERDE ESCURO HOVER */
-}
-
-/* --- CORREÇÃO DE COR AQUI --- */
-.modal-button.cancel {
-  background-color: var(--danger-color, #f44336); /* VERMELHO PADRÃO */
-  color: white; /* Garante que o texto seja branco */
-}
-.modal-button.cancel:hover:not(:disabled) {
-  background-color: var(--danger-hover, #d32f2f); /* VERMELHO ESCURO HOVER */
-}
-/* --- FIM DAS CORREÇÕES --- */
-
-.modal-button:disabled {
-  background-color: #e0e0e0;
-  color: #999;
-  cursor: not-allowed;
-  transform: none;
+.btn-secondary {
+  background: #ffffff;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); } }
+.btn-secondary:hover {
+  background: #f1f5f9;
+}
+
+/* Animação de Entrada */
+@keyframes fadeInModal {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Responsividade */
+@media (max-width: 500px) {
+  .grid-2-col { grid-template-columns: 1fr; gap: 0; }
+  .gdm-modal-container { width: 95%; margin: 10px; }
+}

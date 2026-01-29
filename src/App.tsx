@@ -18,6 +18,8 @@ import TaskManager from "./pages/TaskManager/TaskManager";
 import SeasonalCalendar from "./pages/SeasonalCalendar/SeasonalCalendar";
 import CropPlans from "./pages/CropPlans/CropPlans";
 import SearchResults from "./pages/SearchResults/SearchResults";
+import Settings from './pages/Settings/Settings';
+import AgroSettings from './pages/AgroSettings/AgroSettings';
 
 
 const AppLayout = () => (
@@ -44,6 +46,8 @@ function App() {
           <Route path="/tasks" element={<TaskManager />} />
           <Route path="/calendar" element={<SeasonalCalendar />} />
           <Route path="/search-results" element={<SearchResults />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/agro-settings" element={<AgroSettings />} />
         </Route>
         
       </Routes>

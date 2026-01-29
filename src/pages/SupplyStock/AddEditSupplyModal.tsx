@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Archive } from 'lucide-react';
+import { X, Archive, Save, AlertCircle } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { createSupply, updateSupply } from '../../service/supplyService'; 
 import { SupplyItem, Category, Unit } from './types'; 
@@ -27,75 +27,83 @@ const AddEditSupplyModal: React.FC<AddEditSupplyModalProps> = ({
 }) => {
   const [formData, setFormData] = useState({
     name: '',
-    categoryId: categories[0]?.id || 0, 
+    categoryId: 0, 
     quantity: '',
-    unitId: units[0]?.id || 0, 
+    unitId: 0, 
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  // Sincronização do estado com os dados recebidos
   useEffect(() => {
-    if (editingItem) {
-      setFormData({
-        name: editingItem.name,
-        categoryId: editingItem.category.id,
-        quantity: editingItem.quantity.toString(),
-        unitId: editingItem.unit.id,
-      });
-    } else {
-      setFormData({
-        name: '',
-        categoryId: categories[0]?.id || 0,
-        quantity: '',
-        unitId: units[0]?.id || 0,
-      });
+    if (isOpen) {
+      if (editingItem) {
+        setFormData({
+          name: editingItem.name,
+          categoryId: Number(editingItem.categoryId || editingItem.category?.id || 0),
+          quantity: editingItem.quantity.toString(),
+          unitId: Number(editingItem.unitId || editingItem.unit?.id || 0),
+        });
+      } else {
+        setFormData({
+          name: '',
+          categoryId: categories.length > 0 ? Number(categories[0].id) : 0,
+          quantity: '',
+          unitId: units.length > 0 ? Number(units[0].id) : 0,
+        });
+      }
     }
-  }, [editingItem, categories, units, isOpen]); 
+  }, [isOpen, editingItem, categories, units]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // IMPORTANTE: Se o campo for um ID, convertemos para número imediatamente
+    const finalValue = (name === 'unitId' || name === 'categoryId') ? Number(value) : value;
+    
+    setFormData(prev => ({ ...prev, [name]: finalValue }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    
+    // Validações básicas
+    if (!formData.categoryId || !formData.unitId) {
+        toast.error("Selecione uma categoria e uma unidade válidas.");
+        return;
+    }
 
+    setIsLoading(true);
     const quantityValue = parseFloat(formData.quantity);
+
     if (isNaN(quantityValue) || quantityValue < 0) {
-        toast.error("Quantidade inválida. Use um número não negativo.");
+        toast.error("Quantidade inválida.");
         setIsLoading(false);
         return;
     }
 
     try {
+      const dataPayload = {
+        name: formData.name,
+        quantity: quantityValue,
+        unitId: formData.unitId,
+        categoryId: formData.categoryId,
+        userId: userId, 
+        isActive: true, 
+      };
+
       if (editingItem) {
-        const dataToUpdate = {
-          name: formData.name,
-          quantity: quantityValue,
-          unitId: Number(formData.unitId),
-          categoryId: Number(formData.categoryId),
-        };
-        const updatedItem = await updateSupply(editingItem.id, dataToUpdate);
+        const updatedItem = await updateSupply(editingItem.id, dataPayload);
         onSave(updatedItem); 
-        toast.success('Insumo atualizado com sucesso!');
+        toast.success('Insumo atualizado!');
       } else {
-        const dataToCreate = {
-          name: formData.name,
-          quantity: quantityValue,
-          unitId: Number(formData.unitId),
-          categoryId: Number(formData.categoryId),
-          userId: userId, 
-          isActive: true, 
-        };
-        const newItem = await createSupply(dataToCreate);
+        const newItem = await createSupply(dataPayload);
         onSave(newItem); 
-        toast.success('Insumo criado com sucesso!');
+        toast.success('Insumo criado!');
       }
       onClose(); 
     } catch (error: any) {
-      console.error("Erro ao salvar insumo:", error);
-      const errorMsg = error.response?.data?.message || (editingItem ? 'Erro ao atualizar insumo!' : 'Erro ao criar insumo!');
-      toast.error(errorMsg);
+      console.error("Erro ao salvar:", error);
+      toast.error(error.response?.data?.message || 'Erro ao processar requisição');
     } finally {
       setIsLoading(false);
     }
@@ -104,101 +112,99 @@ const AddEditSupplyModal: React.FC<AddEditSupplyModalProps> = ({
   if (!isOpen) return null; 
 
   return (
-    <div className="add-edit-modal-backdrop">
-      <div className="add-edit-modal-content">
-        <div className="modal-header">
-          <h2 className="modal-title">
-            <Archive size={20} />
-            {editingItem ? 'Editar Insumo' : 'Adicionar Novo Insumo'}
-          </h2>
-          <button type="button" className="modal-close-button" onClick={onClose} disabled={isLoading}>
-            <X size={24} />
+    <div className="gdm-modal-overlay">
+      <div className="gdm-modal-container">
+        <div className="gdm-modal-header">
+          <h3 className="flex items-center gap-2">
+            <Archive size={20} className="text-emerald-500" />
+            {editingItem ? 'Editar Insumo' : 'Novo Insumo'}
+          </h3>
+          <button onClick={onClose} className="close-btn" disabled={isLoading}>
+            <X size={20} />
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="add-edit-modal-form">
-          <div className="form-group">
-            <label htmlFor="supply-name">Nome do Insumo:</label>
-            <input
-              id="supply-name"
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              disabled={isLoading}
-              className="form-input"
-              placeholder="Ex: Semente de Alface Crespa"
-            />
+
+        <form onSubmit={handleSubmit}>
+          <div className="gdm-modal-body">
+            {/* NOME DO INSUMO */}
+            <div className="gdm-form-group">
+              <label>Nome do Produto</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                placeholder="Ex: Semente de Tomate Cereja"
+                disabled={isLoading}
+              />
+            </div>
+
+            <div className="grid-2-col">
+              {/* CATEGORIA */}
+              <div className="gdm-form-group">
+                <label>Categoria</label>
+                <select
+                  name="categoryId"
+                  value={formData.categoryId}
+                  onChange={handleInputChange}
+                  required
+                  disabled={isLoading}
+                >
+                  <option value={0} disabled>Selecione...</option>
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* QUANTIDADE */}
+              <div className="gdm-form-group">
+                <label>Qtd. em Estoque</label>
+                <input
+                  type="number"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleInputChange}
+                  required
+                  step="any"
+                  placeholder="0.00"
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
+            {/* UNIDADE DE MEDIDA */}
+            <div className="gdm-form-group">
+              <label>Unidade de Medida</label>
+              <select
+                name="unitId"
+                value={formData.unitId}
+                onChange={handleInputChange}
+                required
+                disabled={isLoading}
+              >
+                <option value={0} disabled>Selecione uma unidade</option>
+                {units.map((unit) => (
+                  <option key={unit.id} value={unit.id}>
+                    {unit.name} ({unit.symbol})
+                  </option>
+                ))}
+              </select>
+              {units.length === 0 && (
+                <span className="input-tip error">
+                   <AlertCircle size={12} /> Nenhuma unidade cadastrada.
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="supply-category">Categoria:</label>
-            <select
-              id="supply-category"
-              name="categoryId"
-              value={formData.categoryId}
-              onChange={handleInputChange}
-              required
-              disabled={isLoading}
-              className="form-select"
-            >
-              {categories.length === 0 && <option value={0} disabled>Carregando...</option>}
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="supply-quantity">Quantidade:</label>
-            <input
-              id="supply-quantity"
-              type="number"
-              name="quantity"
-              value={formData.quantity}
-              onChange={handleInputChange}
-              required
-              min="0"
-              step="any"
-              disabled={isLoading}
-              className="form-input"
-              placeholder="Ex: 100"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="supply-unit">Unidade:</label>
-            <select
-              id="supply-unit"
-              name="unitId"
-              value={formData.unitId}
-              onChange={handleInputChange}
-              required
-              disabled={isLoading}
-              className="form-select"
-            >
-              {units.length === 0 && <option value={0} disabled>Carregando...</option>}
-              {units.map((unit) => (
-                <option key={unit.id} value={unit.id}>{unit.name}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="modal-actions">
-            <button
-              type="button"
-              className="modal-button cancel"
-              onClick={onClose}
-              disabled={isLoading}
-            >
+          <div className="gdm-modal-footer">
+            <button type="button" className="btn-secondary" onClick={onClose} disabled={isLoading}>
               Cancelar
             </button>
-            <button
-              type="submit"
-              className="modal-button submit"
-              disabled={isLoading}
-            >
-              {isLoading ? (editingItem ? 'Salvando...' : 'Adicionando...') : (editingItem ? 'Salvar Alterações' : 'Adicionar Insumo')}
+            <button type="submit" className="btn-primary" disabled={isLoading}>
+              {isLoading ? 'Processando...' : <><Save size={18} /> Salvar Insumo</>}
             </button>
           </div>
         </form>

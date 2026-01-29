@@ -42,7 +42,6 @@
   margin-bottom: 2rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-color);
-  flex-wrap: wrap;
   gap: 1rem;
 }
 
@@ -57,9 +56,10 @@
 
 .supply-actions {
   display: flex;
-  gap: 1rem;
-  align-items: center;
-  flex-wrap: wrap;
+  flex-direction: row; 
+  align-items: center; 
+  gap: 12px;        
+  flex-wrap: nowrap; 
 }
 
 .filter-label {
@@ -74,9 +74,11 @@
   border: 1px solid var(--border-color);
   background-color: var(--card-background);
   font-size: 0.9rem;
-  min-width: 180px;
+  min-width: 180px; 
+  width: auto;     
   cursor: pointer;
 }
+
 .category-filter:disabled {
   background-color: #f0f0f0;
   cursor: not-allowed;
@@ -219,18 +221,19 @@
 @media (max-width: 600px) {
   .supply-container {
     padding: 1rem;
-    /* margin: 1rem auto; Removido para consistência */
   }
   .supply-header {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
   }
   .supply-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
+      width: 100%;
+      flex-direction: row; 
+      justify-content: space-between;
+    }
   .category-filter {
-      min-width: 100%;
+      flex: 1; 
+      min-width: 0;
   }
   .supply-grid {
     grid-template-columns: 1fr;

@@ -15,9 +15,11 @@ import {
   X,
   Settings,
   Building2,
-  LogOut
+  LogOut,
+  Package
 } from "lucide-react";
 
+import api from "../../service/api";
 import "./layout.css";
 
 type LayoutProps = {
@@ -26,15 +28,27 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Dados para exibição (Simulados por enquanto)
-  const user = {
-    name: "Pedro Henrique",
-    role: "Administrador",
-    organization: "Fazenda AgroSync"
-  };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await api.get('/auth/me');
+        setUserData(response.data);
+      } catch (err) {
+        console.error("Erro ao carregar dados do usuário:", err);
+        navigate('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [navigate]);
 
   useEffect(() => {
     setIsSidebarOpen(false);
@@ -42,12 +56,19 @@ const Layout = ({ children }: LayoutProps) => {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  const displayName = userData?.user?.name || "Carregando...";
+  const displayRole = userData?.user?.role || "Usuário";
+  const displayOrg = userData?.organization?.name || "Fazenda...";
+
   return (
     <div className={`gdm-layout-wrapper ${isSidebarOpen ? 'mobile-open' : ''}`}>
-      {/* Overlay para Mobile */}
       <div className="gdm-overlay" onClick={toggleSidebar}></div>
 
-      {/* --- SIDEBAR --- */}
       <aside className="gdm-sidebar">
         <div className="gdm-sidebar-header">
           <div className="gdm-logo" onClick={() => navigate('/dashboard')}>
@@ -86,12 +107,22 @@ const Layout = ({ children }: LayoutProps) => {
           <NavLink to="/ask-ai" className={({ isActive }) => isActive ? "gdm-link active" : "gdm-link"}>
             <BrainCircuit size={18} /> <span>Consultar IA</span>
           </NavLink>
+
+          <div className="gdm-nav-label">Administrativo</div>
+          <NavLink to="/agro-settings" className={({ isActive }) => isActive ? "gdm-link active" : "gdm-link"}>
+            <Package size={18} /> <span>Cadastros Gerais</span>
+          </NavLink>
+
+          <div className="gdm-nav-label">Configurações</div>
+          <NavLink to="/settings" className={({ isActive }) => isActive ? "gdm-link active" : "gdm-link"}>
+            <Settings size={18} /> <span>Ajustes da Conta</span>
+          </NavLink>
         </nav>
 
         <div className="gdm-sidebar-footer">
           <div className="gdm-status">
             <div className="gdm-dot"></div>
-            <span>Sistema Operacional</span>
+            <span>Sistema Online</span>
           </div>
         </div>
       </aside>
@@ -105,7 +136,9 @@ const Layout = ({ children }: LayoutProps) => {
             </button>
             <div className="gdm-org-tag">
               <Building2 size={16} />
-              <span>{user.organization}</span>
+              <span style={{ fontWeight: 700, color: '#10b981' }}>
+                {displayOrg}
+              </span>
             </div>
           </div>
 
@@ -123,11 +156,11 @@ const Layout = ({ children }: LayoutProps) => {
 
             <div className="gdm-user-box">
               <div className="gdm-user-info">
-                <span className="gdm-user-name">{user.name}</span>
-                <span className="gdm-user-role">{user.role}</span>
+                <span className="gdm-user-name">{displayName}</span>
+                <span className="gdm-user-role">{displayRole}</span>
               </div>
               <UserCircle size={32} className="gdm-user-icon" />
-              <button className="gdm-logout" onClick={() => navigate('/login')}>
+              <button className="gdm-logout" title="Sair do sistema" onClick={handleLogout}>
                 <LogOut size={18} />
               </button>
             </div>
