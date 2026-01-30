@@ -1,5 +1,4 @@
-/* ARQUIVO: src/pages/CropPlans/AddEditPlanModal.css */
-
+/* --- Backdrop e Estrutura Principal --- */
 .cpm-backdrop {
   position: fixed;
   inset: 0;
@@ -13,225 +12,325 @@
 }
 
 .cpm-modal {
-  background: var(--card-background, white);
-  border-radius: var(--border-radius-card, 12px);
+  background: white;
+  border-radius: 12px;
   box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.25);
   width: 95vw;
   height: 90vh;
-  max-width: 100%;
-  max-height: 100%;
-  z-index: 1001;
+  max-width: 850px; /* Ajustado para um tamanho equilibrado */
+  max-height: 800px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   animation: slideUp 0.4s ease-out;
 }
 
-@media (min-width: 1024px) {
-  .cpm-backdrop { padding: 2rem; }
-  .cpm-modal {
-    width: 100%;
-    height: 800px;
-    max-width: 1000px; /* Um pouco menor que o de detalhes */
-    max-height: 800px;
-  }
-}
-
+/* --- Header --- */
 .cpm-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  border-bottom: 1px solid #e0e0e0;
   flex-shrink: 0;
 }
-.cpm-header-title h2 {
+
+.cpm-header h2 {
   margin: 0;
   font-size: 1.4rem;
-  color: var(--primary-color, #2e7d32);
+  color: #2e7d32; /* Seu verde original */
 }
+
 .cpm-close-btn {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.25rem;
-  color: var(--text-muted, #666);
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-.cpm-close-btn:hover {
-  color: var(--text-color, #333);
-  transform: rotate(90deg);
+  color: #666;
+  transition: transform 0.2s ease;
 }
 
+.cpm-close-btn:hover {
+  transform: rotate(90deg);
+  color: #333;
+}
+
+/* --- Navegação por Abas --- */
 .cpm-tab-nav {
   display: flex;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
-  flex-shrink: 0;
-  background-color: var(--main-bg, #f7fef9);
-  overflow-x: auto;
+  padding: 0.5rem 1.5rem;
+  border-bottom: 1px solid #e0e0e0;
+  background-color: #f7fef9;
 }
-.cpm-tab-button {
+
+.cpm-tab-nav button {
   background: none;
   border: none;
   padding: 0.75rem 1rem;
   cursor: pointer;
   font-size: 0.95rem;
   font-weight: 500;
-  color: var(--text-muted, #666);
-  border-radius: 6px;
+  color: #666;
   border-bottom: 3px solid transparent;
-  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  white-space: nowrap;
-}
-.cpm-tab-button:hover {
-  background-color: rgba(0, 0, 0, 0.03);
-  color: var(--text-color, #333);
-}
-.cpm-tab-button.active {
-  color: var(--primary-color, #2e7d32);
-  font-weight: 600;
-  border-bottom-color: var(--primary-color, #2e7d32);
+  transition: all 0.2s;
 }
 
+.cpm-tab-nav button.active {
+  color: #2e7d32;
+  font-weight: 600;
+  border-bottom-color: #2e7d32;
+}
+
+/* --- Conteúdo Interno --- */
 .cpm-tab-content {
   flex-grow: 1;
   overflow-y: auto;
   padding: 1.5rem 2rem;
-  background-color: var(--card-background, white);
-}
-.tab-content-container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-.tab-content-container h3,
-.tab-content-container h4 {
-  font-size: 1.3rem;
-  color: var(--primary-color, #2e7d32);
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-}
-.tab-content-container h4 {
-  font-size: 1.1rem;
-  margin-top: 2rem;
-}
-.tab-divider {
-  border: 0;
-  border-top: 1px dashed var(--border-color, #e0e0e0);
-  margin: 2rem 0;
 }
 
-/* --- Estilos de Formulário Reutilizados --- */
+/* Estilos de Formulário (InfoTab) */
 .modal-form-reused {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
-.form-group {
-  margin-bottom: 0;
-}
-.modal-form-reused label {
+
+.form-group label {
   display: block;
   font-weight: 600;
   margin-bottom: 0.4rem;
-  color: var(--text-color, #333);
+  color: #333;
   font-size: 0.9rem;
 }
+
 .form-input, .form-select, .form-textarea {
   width: 100%;
   padding: 0.8rem;
-  border: 1px solid var(--border-color, #ccc);
-  border-radius: var(--border-radius-button, 8px);
+  border: 1px solid #ccc;
+  border-radius: 8px;
   font-size: 1rem;
-  font-family: var(--font-family, sans-serif);
-  box-sizing: border-box;
 }
-.form-textarea { resize: vertical; min-height: 80px; }
 
-/* --- Sub-formulários (Insumos/Tarefas) --- */
-.sub-form {
+/* --- Sub-formulários (Insumos e Tarefas) --- */
+.sub-form-row {
   display: flex;
   gap: 0.75rem;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-.sub-form.vertical {
-  flex-direction: column;
-  align-items: stretch;
-}
-.sub-form .form-input, .sub-form .form-select {
-  flex-grow: 1; /* Ocupa espaço */
-}
-.modal-button.small {
-  padding: 0.8rem; /* Alinha com altura dos inputs */
-  align-self: flex-end; /* Alinha o botão */
-}
-.sub-form.vertical .modal-button.small {
-  align-self: flex-start; /* Alinha à esquerda no form vertical */
+  background: #f1f8f3;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  align-items: flex-start; /* Alinhado ao topo para suportar labels se necessário */
 }
 
-/* --- Lista de Itens do Plano --- */
-.plan-item-list {
+/* --- Lista de Itens (Supplies e Tasks) --- */
+.item-display-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid var(--border-color, #e0e0e0);
-  border-radius: var(--border-radius-button, 8px);
 }
-.plan-item-list li {
+
+.display-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
 }
-.plan-item-list li:last-child {
-  border-bottom: none;
+
+.day-tag {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  margin-right: 10px;
 }
-.plan-item-list button {
+
+.item-text {
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.delete-btn {
   background: none;
   border: none;
-  color: var(--danger-color, #f44336);
+  color: #f44336;
   cursor: pointer;
-  padding: 0.2rem;
+  padding: 4px;
   border-radius: 50%;
-}
-.plan-item-list button:hover {
-  background-color: var(--delete-hover-bg, rgba(230,57,70,0.1));
+  transition: background 0.2s;
 }
 
+.delete-btn:hover {
+  background: #ffebee;
+}
 
-/* --- Rodapé do Modal (Botões principais) --- */
+/* --- Rodapé --- */
 .cpm-footer {
   display: flex;
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid var(--border-color, #e0e0e0);
+  border-top: 1px solid #e0e0e0;
   background-color: #fdfdfd;
-  flex-shrink: 0;
 }
+
 .modal-button {
-  padding: 0.7rem 1.2rem;
+  padding: 0.7rem 1.5rem;
   font-size: 0.95rem;
   font-weight: 600;
   border: none;
   cursor: pointer;
-  border-radius: var(--border-radius-button, 8px);
-  color: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
-.modal-button.submit { background-color: var(--primary-color, #2e7d32); }
-.modal-button.submit:hover { background-color: var(--primary-hover, #1b5e20); }
-.modal-button.cancel { background-color: var(--danger-color, #f44336); }
-.modal-button.cancel:hover { background-color: var(--danger-hover, #d32f2f); }
+
+.modal-button.submit { background-color: #2e7d32; color: white; }
+.modal-button.cancel { background-color: #f44336; color: white; }
 .modal-button:disabled { background-color: #ccc; cursor: not-allowed; }
 
+/* Container Geral da Aba */
+.tab-panel-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: fadeIn 0.3s ease;
+}
+
+/* Linha de Inputs Superior */
+.input-row-container {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.input-field-flex { flex: 2; }
+.input-field-fixed { width: 100px; }
+
+.field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+/* Botão de Adicionar (Verde) */
+.btn-primary-circle {
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.3);
+}
+
+.btn-primary-circle:hover {
+  background-color: #16a34a;
+  transform: scale(1.05);
+}
+
+/* Lista de Itens */
+.items-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.list-title {
+  font-size: 0.9rem;
+  color: #1e293b;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  border-left: 4px solid #22c55e;
+  padding-left: 10px;
+}
+
+/* Card de cada item da lista */
+.item-row-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  transition: border-color 0.2s;
+}
+
+.item-row-card:hover {
+  border-color: #22c55e;
+}
+
+.item-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.item-name {
+  font-weight: 500;
+  color: #334155;
+}
+
+.item-badge {
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+/* Badge do Dia (Tasks) */
+.day-circle {
+  background: #dcfce7;
+  color: #166534;
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Botão Deletar (Ghost) */
+.btn-delete-ghost {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.btn-delete-ghost:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.icon-green { color: #22c55e; }
+
+/* Animações */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }

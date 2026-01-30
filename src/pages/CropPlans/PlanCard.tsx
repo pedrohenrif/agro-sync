@@ -1,9 +1,7 @@
-// ARQUIVO: src/pages/CropPlans/PlanCard.tsx
-
 import React from 'react';
-import { Pencil, Trash2, Package, ListChecks } from 'lucide-react';
+import { Pencil, Trash2, Package, ListChecks, Calendar } from 'lucide-react';
 import { CropPlan } from './types';
-import './PlanCard.css'; // Criaremos este CSS
+import './PlanCard.css';
 
 interface PlanCardProps {
   plan: CropPlan;
@@ -15,18 +13,28 @@ const PlanCard: React.FC<PlanCardProps> = ({ plan, onEdit, onDelete }) => {
   return (
     <div className="plan-card">
       <div className="card-content">
-        <h3>{plan.name}</h3>
+        <div className="card-header-flex">
+          <h3>{plan.name}</h3>
+          <span className="duration-badge">
+            <Calendar size={12} /> {plan.durationDays} dias
+          </span>
+        </div>
+        
         <p className="category-tag">{plan.culture}</p>
-        <p className="plan-description">{plan.description}</p>
+        <p className="plan-description">
+          {plan.description || "Sem descrição disponível para este plano."}
+        </p>
         
         <div className="plan-summary">
           <div className="summary-item">
             <Package size={16} />
-            <span>{plan.supplies.length} Insumo(s)</span>
+            {/* Atualizado para planSupplies */}
+            <span>{(plan.planSupplies?.length || 0)} Insumo(s)</span>
           </div>
           <div className="summary-item">
             <ListChecks size={16} />
-            <span>{plan.tasks.length} Tarefa(s)</span>
+            {/* Atualizado para planTasks */}
+            <span>{(plan.planTasks?.length || 0)} Tarefa(s)</span>
           </div>
         </div>
       </div>
