@@ -15,9 +15,18 @@ export interface Unit {
 export interface SupplyItem {
   id: number;
   name: string;
-  category: Category; 
   quantity: number;
-  unit: Unit;     
-  categoryId?: number; 
-  unitId?: number;   
+  minStock: number | null;    
+  unitPrice?: number | null;  
+  categoryId: number;
+  unitId: number;
+  category: {
+    id: number;
+    name: string;
+  };
+  unit: {
+    id: number;
+    name: string;
+    symbol: string;
+  };
 }

@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { PlusCircle, Pencil, Trash2 } from 'lucide-react';
+import { PlusCircle, Pencil, Trash2, Clock, Package } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 // Importações dos seus serviços Reais
 import { getSupplys, getCategories } from '../../service/supplyService'; 
 import api from '../../service/api'; 
 
-import './supplyStock.css'; // Usando seu CSS original
+import './supplyStock.css'; 
 import AddEditSupplyModal from './AddEditSupplyModal';
 import DeleteConfirmationModal from './DeleteConfirmationModal';
+import SupplyHistoryModal from './components/SupplyHistoryModal'; // Novo Modal de Histórico
 import { SupplyItem, Category, Unit } from './types'; 
 
 export default function SupplyStock() {
@@ -25,6 +26,10 @@ export default function SupplyStock() {
   const [editingItem, setEditingItem] = useState<SupplyItem | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<SupplyItem | null>(null);
+
+  // Estado para o Histórico (Auditoria)
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
+  const [selectedSupplyForHistory, setSelectedSupplyForHistory] = useState<{id: number, name: string} | null>(null);
 
   // Filtro
   const [selectedCategory, setSelectedCategory] = useState('Todos');
@@ -75,8 +80,13 @@ export default function SupplyStock() {
     setIsDeleteModalOpen(true);
   };
 
+  const handleOpenHistory = (item: SupplyItem) => {
+    setSelectedSupplyForHistory({ id: item.id, name: item.name });
+    setIsHistoryModalOpen(true);
+  };
+
   const handleSaveSuccess = () => {
-    fetchData(); // Recarrega tudo para garantir a atualização
+    fetchData(); 
   };
 
   const handleDeleteSupply = (deletedId: number) => {
@@ -91,7 +101,6 @@ export default function SupplyStock() {
 
   return (
     <div className="supply-container">
-      {/* Cabeçalho - Usando suas classes originais */}
       <div className="supply-header">
         <h2>
           <span role="img" aria-label="package">📦</span> 
@@ -141,28 +150,48 @@ export default function SupplyStock() {
           </div>
       )}
 
-      {/* Grid e Cards - Usando suas classes originais */}
       {!isLoading && !error && filteredSupplies.length > 0 && (
         <div className="supply-grid">
           {filteredSupplies.map((item) => (
             <div key={item.id} className="supply-card">
               <div className="card-content">
+                <div className="card-header-flex">
+                  <p className="category-tag">{item.category?.name || 'Geral'}</p>
+                </div>
                 <h3>{item.name}</h3>
-                <p className="category-tag">{item.category?.name || 'Geral'}</p>
                 <p className="quantity-info">
                   <strong>{item.quantity}</strong> {item.unit?.symbol || item.unit?.name}
                 </p>
-                {/* Opcional: Mostra quem atualizou se quiser usar os dados do currentUser */}
-                <p style={{fontSize: '0.7rem', color: '#999', marginTop: '10px'}}>
-                  Ref: {currentUser?.name || 'Sistema'}
+                <p style={{fontSize: '0.7rem', color: '#94a3b8', marginTop: '10px', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                   Última alteração por: <strong>{currentUser?.name || 'Sistema'}</strong>
                 </p>
               </div>
 
               <div className="card-actions">
-                <button type="button" className="action-button edit" onClick={() => handleOpenEditModal(item)} title="Editar">
+                <button 
+                  type="button" 
+                  className="action-button history" 
+                  onClick={() => handleOpenHistory(item)} 
+                  title="Ver Extrato de Movimentação"
+                >
+                  <Clock size={16} /> 
+                </button>
+                
+                <button 
+                  type="button" 
+                  className="action-button edit" 
+                  onClick={() => handleOpenEditModal(item)} 
+                  title="Editar Insumo"
+                >
                   <Pencil size={16} /> 
                 </button>
-                <button type="button" className="action-button delete" onClick={() => handleOpenDeleteModal(item)} title="Excluir">
+                
+                <button 
+                  type="button" 
+                  className="action-button delete" 
+                  onClick={() => handleOpenDeleteModal(item)} 
+                  title="Excluir"
+                >
                   <Trash2 size={16} />
                 </button>
               </div>
@@ -171,7 +200,6 @@ export default function SupplyStock() {
         </div>
       )}
 
-      {/* Modais Reais */}
       <AddEditSupplyModal
         isOpen={isAddEditModalOpen}
         onClose={() => setIsAddEditModalOpen(false)}
@@ -179,7 +207,7 @@ export default function SupplyStock() {
         units={units}
         editingItem={editingItem}
         onSave={handleSaveSuccess}
-        userId={currentUser?.id} // ID Real do usuário
+        userId={currentUser?.id} 
       />
 
       <DeleteConfirmationModal
@@ -187,6 +215,13 @@ export default function SupplyStock() {
         onClose={() => setIsDeleteModalOpen(false)}
         itemToDelete={itemToDelete}
         onConfirm={handleDeleteSupply}
+      />
+
+      <SupplyHistoryModal 
+        isOpen={isHistoryModalOpen}
+        onClose={() => setIsHistoryModalOpen(false)}
+        supplyId={selectedSupplyForHistory?.id || null}
+        supplyName={selectedSupplyForHistory?.name || ''}
       />
     </div>
   );

@@ -33,7 +33,6 @@ const AddEditSupplyModal: React.FC<AddEditSupplyModalProps> = ({
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  // Sincronização do estado com os dados recebidos
   useEffect(() => {
     if (isOpen) {
       if (editingItem) {
