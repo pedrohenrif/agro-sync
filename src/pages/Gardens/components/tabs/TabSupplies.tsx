@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { PlusCircle, History, Package, ArrowRight, Beaker } from 'lucide-react';
 import { toast } from 'react-toastify';
-import api from '../../../../../service/api';
-import * as gardenService from '../../../../../service/gardenService';
+import api from '../../../../service/api';
+import * as gardenService from '../../../../service/gardenService';
 
 import './TabSupplies.css';
 

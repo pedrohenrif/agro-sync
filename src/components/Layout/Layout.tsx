@@ -16,7 +16,8 @@ import {
   Settings,
   Building2,
   LogOut,
-  Package
+  Package,
+  CalendarCheck
 } from "lucide-react";
 
 import api from "../../service/api";
@@ -87,6 +88,10 @@ const Layout = ({ children }: LayoutProps) => {
           </NavLink>
 
           <div className="gdm-nav-label">Produção</div>
+          <NavLink to="/agenda" className={({ isActive }) => isActive ? 'gdm-link active' : 'gdm-link'}>
+              <CalendarCheck size={18} />
+              <span>Agenda de Hoje</span>
+          </NavLink>
           <NavLink to="/gardens" className={({ isActive }) => isActive ? "gdm-link active" : "gdm-link"}>
             <List size={18} /> <span>Canteiros</span>
           </NavLink>

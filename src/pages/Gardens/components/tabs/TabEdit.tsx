@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
-import { Garden } from '../../../types';
-import * as gardenService from '../../../../../service/gardenService';
+import { Garden } from '../../types';
+import * as gardenService from '../../../../service/gardenService';
 
 import './TabEdit.css';
 

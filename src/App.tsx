@@ -20,6 +20,7 @@ import CropPlans from "./pages/CropPlans/CropPlans";
 import SearchResults from "./pages/SearchResults/SearchResults";
 import Settings from './pages/Settings/Settings';
 import AgroSettings from './pages/AgroSettings/AgroSettings';
+import TaskAgenda from './pages/TaskAgenda/TaskAgenda';
 
 
 const AppLayout = () => (
@@ -48,6 +49,7 @@ function App() {
           <Route path="/search-results" element={<SearchResults />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/agro-settings" element={<AgroSettings />} />
+          <Route path="/agenda" element={<TaskAgenda />} />
         </Route>
         
       </Routes>

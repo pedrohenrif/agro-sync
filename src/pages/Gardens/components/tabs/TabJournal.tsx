@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { BookOpen, Tag, AlignLeft, Save } from 'lucide-react';
-import * as gardenService from '../../../../../service/gardenService';
+import * as gardenService from '../../../../service/gardenService';
 
 import './TabJournal.css';
 

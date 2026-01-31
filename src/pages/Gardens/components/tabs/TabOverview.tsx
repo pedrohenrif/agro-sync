@@ -3,8 +3,8 @@ import { Leaf, Maximize2, TrendingUp, Calculator, ShoppingBasket, History, Check
 import { BlockMath } from 'react-katex';
 import { toast } from 'react-toastify';
 
-import * as gardenService from '../../../../../service/gardenService';
-import api from '../../../../../service/api';
+import * as gardenService from '../../../../service/gardenService';
+import api from '../../../../service/api';
 
 import './TabOverview.css';
 

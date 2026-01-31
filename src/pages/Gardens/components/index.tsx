@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, BookOpen, Edit2, LayoutGrid, ListChecks, Package, Leaf } from 'lucide-react';
-import { Garden } from '../../types'; // Ajuste o caminho conforme seu projeto
+import { Garden } from '../types'; // Ajuste o caminho conforme seu projeto
 
 // Importação das Abas
 import TabOverview from './tabs/TabOverview';

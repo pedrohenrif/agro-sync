@@ -20,3 +20,8 @@ export const updateTaskStatus = async (id: number, status: TaskStatus) => {
 export const deleteTask = async (id: number) => {
   await api.delete(`/tasks/${id}`);
 };
+
+export const getTodayTasks = async () => {
+  const response = await api.get('/tasks/today');
+  return response.data;
+};

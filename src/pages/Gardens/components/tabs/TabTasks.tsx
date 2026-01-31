@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { CheckCircle, Clock, Calendar, AlertTriangle, ListChecks } from 'lucide-react';
-import * as gardenService from '../../../../../service/gardenService';
-import * as taskService from '../../../../../service/taskService'; // Importar para o Delete/Update
-import EditTaskModal from '../../../../TaskManager/EditTaskModal'; // Ajuste o caminho se necessário
+import * as gardenService from '../../../../service/gardenService';
+import * as taskService from '../../../../service/taskService'; // Importar para o Delete/Update
+import EditTaskModal from '../../../TaskManager/EditTaskModal'; // Ajuste o caminho se necessário
 
 import './TabTasks.css';
 

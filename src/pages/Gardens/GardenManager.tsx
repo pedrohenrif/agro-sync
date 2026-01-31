@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { toast } from 'react-toastify';
-import { Trash2, PlusCircle, Sprout } from 'lucide-react'; 
+import { PlusCircle, Sprout } from 'lucide-react'; 
 import { Garden } from "./types";
 import * as gardenService from '../../service/gardenService';
 
 import "./GardenManager.css";
 import DeleteGardenModal from "./DeleteGardenModal";
-import GardenDetailModal from "./components/GardenDetailModal";
+import GardenDetailModal from "./components";
 import AddGardenModal from "./AddGardenModal";
+import GardenCard from "./GardenCard"; // Importando o novo card
+
+import StartPlantingModal from "./components/StartPlantingModal"; 
 
 const GardenManager = () => {
   const [gardens, setGardens] = useState<Garden[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const [deletingGardenId, setDeletingGardenId] = useState<number | null>(null);
+  const [deletingGarden, setDeletingGarden] = useState<{id: number, name: string} | null>(null);
   const [viewingGarden, setViewingGarden] = useState<Garden | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  
+  const [plantingGarden, setPlantingGarden] = useState<Garden | null>(null);
 
   useEffect(() => {
     fetchGardens();
@@ -28,8 +31,7 @@ const GardenManager = () => {
       const data = await gardenService.getGardens();
       setGardens(data);
     } catch (err) {
-      setError("Não foi possível carregar os canteiros.");
-      toast.error("Erro ao buscar canteiros!");
+      toast.error("Não foi possível carregar os canteiros.");
     } finally {
       setIsLoading(false);
     }
@@ -46,14 +48,14 @@ const GardenManager = () => {
   };
 
   const handleDeleteConfirm = async () => {
-    if (!deletingGardenId) return;
+    if (!deletingGarden) return;
     try {
-      await gardenService.deleteGarden(deletingGardenId);
-      setGardens(prev => prev.filter(g => g.id !== deletingGardenId));
-      setDeletingGardenId(null);
-      toast.success("Canteiro excluído com sucesso!");
+      await gardenService.deleteGarden(deletingGarden.id);
+      setGardens(prev => prev.filter(g => g.id !== deletingGarden.id));
+      setDeletingGarden(null);
+      toast.success("Canteiro excluído!");
     } catch (error) {
-      toast.error("Falha ao excluir o canteiro.");
+      toast.error("Falha ao excluir.");
     }
   };
 
@@ -80,42 +82,22 @@ const GardenManager = () => {
       ) : (
         <div className="gardens-grid">
           {gardens.map((garden) => (
-            <div 
-              key={garden.id} 
-              className="garden-card clickable"
-              onClick={() => setViewingGarden(garden)}
-            >
-              <div className="card-content">
-                <h3>{garden.name}</h3>
-                <p className="category-tag">{garden.crop}</p>
-                <div className="card-details">
-                  <p><strong>Plantado em:</strong> {new Date(garden.plantingDate).toLocaleDateString()}</p>
-                  <p><strong>Tamanho:</strong> {garden.sizeInM2}m²</p>
-                  {garden.location && <p><strong>Localização:</strong> {garden.location}</p>}
-                </div>
-              </div>
-              <div className="card-actions">
-                <button 
-                  type="button" 
-                  className="action-button delete" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDeletingGardenId(garden.id);
-                  }} 
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            </div>
+            <GardenCard 
+              key={garden.id}
+              garden={garden}
+              onView={setViewingGarden}
+              onDelete={(id, name) => setDeletingGarden({id, name})}
+              onStartPlanting={(g) => setPlantingGarden(g)} // Abre o fluxo de plantio
+            />
           ))}
         </div>
       )}
 
       {/* MODALS */}
-      {deletingGardenId && (
+      {deletingGarden && (
         <DeleteGardenModal
-          gardenName={gardens.find(g => g.id === deletingGardenId)?.name || 'este canteiro'}
-          onClose={() => setDeletingGardenId(null)}
+          gardenName={deletingGarden.name}
+          onClose={() => setDeletingGarden(null)}
           onConfirm={handleDeleteConfirm}
         />
       )}
@@ -133,6 +115,14 @@ const GardenManager = () => {
         onClose={() => setIsAddModalOpen(false)}
         onSave={handleAddSave}
       />
+
+      {plantingGarden && (
+        <StartPlantingModal 
+          garden={plantingGarden} // Agora o TS sabe que aqui o garden não é null
+          onClose={() => setPlantingGarden(null)}
+          onConfirm={fetchGardens} 
+        />
+      )}
     </div>
   );
 };

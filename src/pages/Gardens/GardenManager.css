@@ -197,11 +197,242 @@
   }
 }
 
-/* --- ADIÇÕES FINAIS PARA O CARD CLICÁVEL --- */
-.garden-card.clickable {
-  cursor: pointer;
+.card-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
 }
 
-.garden-card.clickable .action-button {
+.garden-card.clickable {
   cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.garden-card.vacant {
+  border-left: 5px solid #94a3b8;
+  background-color: #fcfcfc;
+}
+
+.garden-card.active {
+  border-left: 5px solid #22c55e;
+}
+
+.status-badge {
+  font-size: 0.65rem;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.status-vacant { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+.status-active { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+
+/* O Botão "Iniciar Plantio" - Design mais integrado */
+.btn-start-planting {
+  margin-top: 1.25rem;
+  width: 100%;
+  background: white; /* Fundo branco com borda verde para não "pesar" o card */
+  color: #2e7d32;
+  border: 2px solid #2e7d32;
+  padding: 10px;
+  border-radius: var(--border-radius-button);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.btn-start-planting:hover {
+  background: #2e7d32;
+  color: white;
+  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+}
+
+.btn-start-planting svg {
+  transition: transform 0.2s ease;
+}
+
+.btn-start-planting:hover svg {
+  transform: scale(1.2);
+}
+
+/* Plan Preview e Summary (Modais) */
+.planting-summary {
+  background: #f0fdf4;
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #22c55e;
+  margin-bottom: 1.5rem;
+  color: #166534;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.cpm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.cpm-modal {
+  background: white;
+  width: 95%;
+  max-width: 500px;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  animation: modalAppear 0.3s ease-out;
+}
+
+@keyframes modalAppear {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Cabeçalho do Modal */
+.cpm-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cpm-header h2 {
+  font-size: 1.25rem;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.cpm-close-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.cpm-close-btn:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* Conteúdo e Formulário */
+.cpm-tab-content {
+  padding: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.form-select, .form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #1e293b;
+  transition: border-color 0.2s;
+  background-color: #f8fafc;
+}
+
+.form-select:focus, .form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background-color: white;
+}
+
+/* Card de Previsão (O tracejado) */
+.plan-preview-card {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background: #f8fafc;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+}
+
+.plan-preview-card h4 {
+  margin: 0 0 0.75rem 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.preview-details {
+  display: flex;
+  gap: 20px;
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 10px;
+}
+
+/* Rodapé e Botões */
+.cpm-footer {
+  padding: 1.25rem 1.5rem;
+  background: #f8fafc;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.modal-button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-button.cancel {
+  background: white;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+}
+
+.modal-button.cancel:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.modal-button.submit {
+  background: var(--primary-color);
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modal-button.submit:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.modal-button.submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
