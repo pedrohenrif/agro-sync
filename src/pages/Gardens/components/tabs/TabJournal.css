@@ -111,3 +111,79 @@
   background-color: #94a3b8;
   cursor: not-allowed;
 }
+
+.journal-history-section {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.history-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #475569;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.journal-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid #e2e8f0;
+}
+
+.timeline-item {
+  position: relative;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -17px;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  border: 2px solid white;
+}
+
+.timeline-content {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #edf2f7;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.timeline-date { font-size: 0.75rem; color: #64748b; font-weight: 600; }
+
+.entry-badge {
+  font-size: 0.65rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.entry-badge.observation { background: #e2e8f0; color: #475569; }
+.entry-badge.pest { background: #fee2e2; color: #ef4444; }
+
+.timeline-content h5 { margin: 0 0 5px 0; color: #1e293b; font-size: 1rem; }
+.timeline-content p { margin: 0; font-size: 0.85rem; color: #475569; line-height: 1.4; }
+
+.timeline-footer {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
