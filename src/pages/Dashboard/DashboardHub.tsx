@@ -1,56 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { Loader2 } from 'lucide-react';
 import { getDashboardData } from '../../service/dashboardService';
-
-// Importação dos componentes que vamos criar a seguir
 import ProductionSection from './sections/ProductionSection';
 import OperationsSection from './sections/OperationsSection';
 import InventoryBanner from './components/InventoryBanner';
-
-import './dashboard.css';
 
 const DashboardHub: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getDashboardData();
-        setData(result);
-      } catch (err) {
-        toast.error('Falha ao sincronizar painel de controle.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchData();
+    getDashboardData()
+      .then(setData)
+      .catch(() => toast.error('Falha ao sincronizar painel de controle.'))
+      .finally(() => setIsLoading(false));
   }, []);
 
-  if (isLoading) return <div className="loading-state">Carregando inteligência de dados...</div>;
-  if (!data) return <div className="error-state">Nenhum dado disponível no momento.</div>;
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-[300px] gap-3 text-emerald-600 font-semibold">
+      <Loader2 size={20} className="animate-spin" />
+      Carregando inteligência de dados...
+    </div>
+  );
+
+  if (!data) return (
+    <div className="flex items-center justify-center h-[300px] text-slate-500">
+      Nenhum dado disponível no momento.
+    </div>
+  );
 
   return (
-    <div className="dashboard-wrapper">
-      <header className="dashboard-header">
+    <div className="animate-fade-in">
+      <header className="flex justify-between items-start mb-8 gap-4 flex-wrap">
         <div>
-          <h1>Gestão Centralizada</h1>
-          <p>Dados consolidados da sua organização agrícola</p>
+          <h1 className="text-2xl font-extrabold text-slate-900">Gestão Centralizada</h1>
+          <p className="mt-1 text-sm text-slate-500">Dados consolidados da sua organização agrícola</p>
         </div>
       </header>
 
-      {/* Seção 1: Produção e Financeiro */}
-      <ProductionSection 
-        production={data.production} 
-        charts={data.charts} 
-      />
+      <ProductionSection production={data.production} charts={data.charts} />
+      <OperationsSection tasks={data.tasks} />
 
-      {/* Seção 2: Operações e Tarefas */}
-      <OperationsSection 
-        tasks={data.tasks} 
-      />
-
-      {/* Alerta Global de Estoque (Se houver) */}
       {data.inventory.lowStockAlerts > 0 && (
         <InventoryBanner count={data.inventory.lowStockAlerts} />
       )}

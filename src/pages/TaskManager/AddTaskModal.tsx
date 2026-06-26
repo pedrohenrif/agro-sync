@@ -3,9 +3,7 @@ import { X, Save, MapPin } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { TaskPriority } from './types';
 import * as taskService from '../../service/taskService';
-import api from '../../service/api'; 
-
-import './AddTaskModal.css';
+import api from '../../service/api';
 
 interface AddTaskModalProps {
   isOpen: boolean;
@@ -18,47 +16,30 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, onSave }) 
   const [priority, setPriority] = useState<TaskPriority>('MEDIUM');
   const [dueDate, setDueDate] = useState('');
   const [description, setDescription] = useState('');
-  const [gardenId, setGardenId] = useState(''); 
-  const [gardens, setGardens] = useState<any[]>([]); 
+  const [gardenId, setGardenId] = useState('');
+  const [gardens, setGardens] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
-      const fetchGardens = async () => {
-        try {
-          const response = await api.get('/gardens'); 
-          setGardens(response.data);
-        } catch (err) {
-          console.error("Erro ao carregar canteiros no modal de tarefas:", err);
-        }
-      };
-      fetchGardens();
+      api.get('/gardens').then(r => setGardens(r.data)).catch(() => {});
     }
   }, [isOpen]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
-      const taskData = {
-        title,
-        priority,
+      const created = await taskService.createTask({
+        title, priority,
         dueDate: dueDate || null,
         description,
-        gardenId: gardenId ? Number(gardenId) : null 
-      };
-      
-      const createdTask = await taskService.createTask(taskData);
-      onSave(createdTask);
+        gardenId: gardenId ? Number(gardenId) : null
+      });
+      onSave(created);
       onClose();
-      
-      setTitle(''); 
-      setPriority('MEDIUM'); 
-      setDueDate(''); 
-      setDescription('');
-      setGardenId('');
-    } catch (error) {
+      setTitle(''); setPriority('MEDIUM'); setDueDate(''); setDescription(''); setGardenId('');
+    } catch {
       toast.error("Falha ao agendar tarefa.");
     } finally {
       setIsLoading(false);
@@ -67,79 +48,68 @@ const AddTaskModal: React.FC<AddTaskModalProps> = ({ isOpen, onClose, onSave }) 
 
   if (!isOpen) return null;
 
+  const inputCls = "w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:border-transparent transition";
+  const labelCls = "block text-xs font-semibold text-slate-600 mb-1";
+
   return (
-    <div className="add-task-modal-backdrop">
-      <div className="add-task-modal-content">
-        <form onSubmit={handleSubmit} className="add-task-modal-form">
-          <div className="modal-header">
-            <h2 className="modal-title">Nova Tarefa</h2>
-            <button type="button" className="modal-close-button" onClick={onClose} disabled={isLoading}>
-              <X size={24} />
-            </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+      <div className="bg-white rounded-2xl shadow-modal w-full max-w-lg animate-slide-up">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+          <h2 className="text-lg font-bold text-slate-900">Nova Tarefa</h2>
+          <button onClick={onClose} disabled={isLoading} className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition">
+            <X size={20} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4">
+          <div>
+            <label className={labelCls}>O que precisa ser feito?</label>
+            <input type="text" value={title} onChange={e => setTitle(e.target.value)} required
+              placeholder="Ex: Adubar canteiro de tomates" className={inputCls} />
           </div>
 
-          <div className="form-group">
-            <label>O que precisa ser feito?</label>
-            <input 
-              type="text" 
-              value={title} 
-              onChange={(e) => setTitle(e.target.value)} 
-              required 
-              placeholder="Ex: Adubar canteiro de tomates" 
-              className="form-input"
-            />
-          </div>
-          
-          <div className="form-group-row">
-            <div className="form-group">
-              <label>Prioridade:</label>
-              <select value={priority} onChange={(e) => setPriority(e.target.value as TaskPriority)} className="form-select">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelCls}>Prioridade</label>
+              <select value={priority} onChange={e => setPriority(e.target.value as TaskPriority)} className={inputCls}>
                 <option value="LOW">Rotina (Baixa)</option>
                 <option value="MEDIUM">Normal (Média)</option>
                 <option value="HIGH">Urgente (Alta)</option>
               </select>
             </div>
-            <div className="form-group">
-              <label>Data Limite:</label>
-              <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className="form-input" />
+            <div>
+              <label className={labelCls}>Data Limite</label>
+              <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} className={inputCls} />
             </div>
           </div>
 
-          <div className="form-group">
-            <label style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <MapPin size={14} /> Vincular a um Canteiro (Opcional):
+          <div>
+            <label className={labelCls + " flex items-center gap-1"}>
+              <MapPin size={12} /> Vincular a um Canteiro (Opcional)
             </label>
-            <select 
-              value={gardenId} 
-              onChange={(e) => setGardenId(e.target.value)} 
-              className="form-select"
-            >
-              <option value="">Nenhum (Tarefa Geral da Fazenda)</option>
-              {gardens.map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.name} {g.lotCode ? `[Lote: ${g.lotCode}]` : ''}
-                </option>
+            <select value={gardenId} onChange={e => setGardenId(e.target.value)} className={inputCls}>
+              <option value="">Nenhum (Tarefa Geral)</option>
+              {gardens.map(g => (
+                <option key={g.id} value={g.id}>{g.name}{g.lotCode ? ` [Lote: ${g.lotCode}]` : ''}</option>
               ))}
             </select>
           </div>
-          
-          <div className="form-group">
-            <label>Notas Adicionais:</label>
-            <textarea 
-              rows={3} 
-              value={description} 
-              onChange={(e) => setDescription(e.target.value)} 
-              className="form-textarea" 
-              placeholder="Descreva detalhes ou instruções aqui..." 
-            />
+
+          <div>
+            <label className={labelCls}>Notas Adicionais</label>
+            <textarea rows={3} value={description} onChange={e => setDescription(e.target.value)}
+              placeholder="Descreva detalhes ou instruções aqui..."
+              className={inputCls + " resize-none"} />
           </div>
 
-          <div className="modal-actions">
-            <button type="button" className="modal-button cancel" onClick={onClose} disabled={isLoading}>
+          <div className="flex justify-end gap-3 pt-2">
+            <button type="button" onClick={onClose} disabled={isLoading}
+              className="px-4 py-2 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
               Cancelar
             </button>
-            <button type="submit" className="modal-button submit" disabled={isLoading}>
-              {isLoading ? "Salvando..." : "Agendar Tarefa"}
+            <button type="submit" disabled={isLoading}
+              className="inline-flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-emerald-500 hover:bg-emerald-600 rounded-lg transition shadow-sm disabled:opacity-60">
+              <Save size={16} /> {isLoading ? "Salvando..." : "Agendar Tarefa"}
             </button>
           </div>
         </form>

@@ -1,38 +1,62 @@
-.App {
-  text-align: center;
+/* ═══════════════════════════════════════════════════════════════
+   AgroSync — App.css (reset e utilitários de nível raiz)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Override padrão create-react-app */
+.App { min-height: 100vh; }
+
+/* ── React-Toastify — ajustes de tema ───────────────────────── */
+.Toastify__toast {
+  font-family: var(--font-sans) !important;
+  font-size: var(--text-sm) !important;
+  border-radius: var(--radius-xl) !important;
+  box-shadow: var(--shadow-lg) !important;
+  border: 1px solid var(--border) !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.Toastify__toast--success {
+  background: var(--color-success-bg) !important;
+  color: var(--color-primary-800) !important;
+  border-color: var(--color-success-border) !important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.Toastify__toast--error {
+  background: var(--color-danger-bg) !important;
+  color: #991b1b !important;
+  border-color: var(--color-danger-border) !important;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.Toastify__toast--warning {
+  background: var(--color-warning-bg) !important;
+  color: #92400e !important;
+  border-color: var(--color-warning-border) !important;
 }
 
-.App-link {
-  color: #61dafb;
+.Toastify__progress-bar--success { background: var(--primary) !important; }
+.Toastify__progress-bar--error   { background: var(--color-danger) !important; }
+
+/* ── Recharts – tema global ─────────────────────────────────── */
+.recharts-default-tooltip {
+  border-radius: var(--radius-lg) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: var(--shadow-md) !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--text-xs) !important;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* ── FullCalendar – tema global ─────────────────────────────── */
+.fc .fc-button {
+  border-radius: var(--radius-md) !important;
+  font-family: var(--font-sans) !important;
+  font-size: var(--text-sm) !important;
+}
+
+.fc .fc-button-primary {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+}
+
+.fc .fc-button-primary:hover {
+  background: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
 }
