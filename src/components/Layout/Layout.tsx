@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, List, Archive, BrainCircuit, Calendar,
   ClipboardCheck, ListChecks, UserCircle, Bell, CloudSun,
-  Menu, X, Settings, Building2, LogOut, Package, CalendarCheck
+  Menu, X, Settings, Building2, LogOut, Package, CalendarCheck, DollarSign, MapPin
 } from "lucide-react";
 import api from "../../service/api";
 
@@ -23,13 +23,15 @@ const NAV = [
   { label: "Produção", links: [
     { to: "/agenda",       icon: CalendarCheck, label: "Agenda de Hoje" },
     { to: "/gardens",      icon: List,          label: "Canteiros" },
+    { to: "/mapa",         icon: MapPin,         label: "Mapa da Fazenda" },
     { to: "/supply-stock", icon: Archive,        label: "Estoque" },
     { to: "/crop-plans",   icon: ClipboardCheck, label: "Planos de Cultivo" },
   ]},
   { label: "Gestão", links: [
-    { to: "/tasks",    icon: ListChecks,  label: "Tarefas" },
-    { to: "/calendar", icon: Calendar,    label: "Calendário" },
-    { to: "/ask-ai",   icon: BrainCircuit, label: "Consultar IA" },
+    { to: "/tasks",       icon: ListChecks,   label: "Tarefas" },
+    { to: "/calendar",    icon: Calendar,     label: "Calendário" },
+    { to: "/financeiro",  icon: DollarSign,   label: "Financeiro" },
+    { to: "/ask-ai",      icon: BrainCircuit, label: "Consultar IA" },
   ]},
   { label: "Administrativo", links: [
     { to: "/agro-settings", icon: Package, label: "Cadastros Gerais" },

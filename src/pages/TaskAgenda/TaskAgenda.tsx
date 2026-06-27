@@ -24,11 +24,11 @@ const TaskAgenda = () => {
   useEffect(() => { fetchTodayTasks(); }, []);
 
   const handleToggleTask = async (taskId: number, currentStatus: string) => {
-    const newStatus = currentStatus === 'COMPLETED' ? 'PENDING' : 'COMPLETED';
+    const newStatus = currentStatus === 'DONE' ? 'PENDING' : 'DONE';
     try {
       await taskService.updateTaskStatus(taskId, newStatus as any);
       setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: newStatus } : t));
-      if (newStatus === 'COMPLETED') toast.success("Tarefa concluída!");
+      if (newStatus === 'DONE') toast.success("Tarefa concluída!");
     } catch { toast.error("Erro ao atualizar o status da tarefa."); }
   };
 
@@ -62,15 +62,15 @@ const TaskAgenda = () => {
           {tasks.map(task => (
             <div key={task.id}
               className={`flex items-center gap-4 px-4 py-4 bg-white rounded-xl border transition-all
-                ${task.status === 'COMPLETED' ? 'border-emerald-200 opacity-70' : 'border-slate-200 hover:border-emerald-300 shadow-sm'}`}>
+                ${task.status === 'DONE' ? 'border-emerald-200 opacity-70' : 'border-slate-200 hover:border-emerald-300 shadow-sm'}`}>
               <button onClick={() => handleToggleTask(task.id, task.status)}
                 className="flex-shrink-0 transition-transform hover:scale-110">
-                {task.status === 'COMPLETED'
+                {task.status === 'DONE'
                   ? <CheckCircle2 size={26} className="text-emerald-500" />
                   : <Circle size={26} className="text-slate-300" />}
               </button>
               <div className="flex-1 min-w-0">
-                <h3 className={`text-sm font-semibold ${task.status === 'COMPLETED' ? 'line-through text-slate-400' : 'text-slate-900'}`}>
+                <h3 className={`text-sm font-semibold ${task.status === 'DONE' ? 'line-through text-slate-400' : 'text-slate-900'}`}>
                   {task.title}
                 </h3>
                 <div className="flex items-center gap-3 mt-1">

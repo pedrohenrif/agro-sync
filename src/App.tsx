@@ -21,6 +21,8 @@ import SearchResults from "./pages/SearchResults/SearchResults";
 import Settings from './pages/Settings/Settings';
 import AgroSettings from './pages/AgroSettings/AgroSettings';
 import TaskAgenda from './pages/TaskAgenda/TaskAgenda';
+import Finance from './pages/Finance/Finance';
+import FarmMap from './pages/Map/FarmMap';
 
 
 const AppLayout = () => (
@@ -50,6 +52,8 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/agro-settings" element={<AgroSettings />} />
           <Route path="/agenda" element={<TaskAgenda />} />
+          <Route path="/financeiro" element={<Finance />} />
+          <Route path="/mapa" element={<FarmMap />} />
         </Route>
         
       </Routes>
